@@ -8,7 +8,7 @@ import AuthLayout from '../layouts/AuthLayout';
 import Login from '../pages/auth/Login';
 import UnauthorizedPage from '../pages/auth/UnauthorizedPage';
 import DashboardPage from '../pages/dashboard/DashboardPage';
-import EmployeesPage from '../pages/employees/EmployeesPage';
+import EmployeesPage from '../pages/employees/EmployeeList';
 import AttendancePage from '../pages/attendance/AttendancePage';
 import PayrollPage from '../pages/payroll/PayrollPage';
 import TasksPage from '../pages/tasks/TasksPage';

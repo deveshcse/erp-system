@@ -1,16 +1,37 @@
-# React + Vite
+# ERP System Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a modern ERP dashboard built with React, Vite, Tailwind CSS, and TanStack Query.
 
-Currently, two official plugins are available:
+## Test Credentials
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+I have created test users for all roles. You can now use these credentials to test the features of the ERP system:
 
-## React Compiler
+### 1. Super Admin
+- **Email**: `admin@erp.com`
+- **Password**: `adminpassword123`
+- **Role**: `SUPER_ADMIN`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 2. Company Admin
+- **Email**: `company@erp.com`
+- **Password**: `companypassword123`
+- **Role**: `COMPANY_ADMIN`
+- **Company**: Test ERP Corp
 
-## Expanding the ESLint configuration
+### 3. Employee
+- **Email**: `employee@erp.com`
+- **Password**: `employeepassword123`
+- **Role**: `EMPLOYEE`
+- **Company**: Test ERP Corp
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The database has been updated with these users and a test company.
+
+---
+
+## Tech Stack
+- **Framework**: React 18 (Vite)
+- **Routing**: React Router v6
+- **State Management**: React Context API
+- **Data Fetching**: TanStack Query (React Query) v5
+- **Styling**: Tailwind CSS
+- **API Client**: Axios
+
