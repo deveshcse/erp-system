@@ -6,6 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
 import healthcheckRouter from './routes/healthcheck.routes.js';
 import authRouter from './routes/auth.routes.js';
+import companyRouter from './routes/company.routes.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Routes
 app.use("/api/v1", healthcheckRouter);
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/companies", companyRouter);
 
 // Root Route for Health Check
 app.get("/", (req, res) => {
