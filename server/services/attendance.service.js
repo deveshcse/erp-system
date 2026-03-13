@@ -20,7 +20,7 @@ export const markAttendance = async (attendanceData, companyId) => {
   const attendance = await Attendance.findOneAndUpdate(
     { employeeId, date: recordDate },
     { 
-        $set: { ...attendanceData, date: recordDate } 
+        $set: { ...attendanceData, date: recordDate, companyId } 
     },
     { new: true, upsert: true, runValidators: true }
   );
@@ -94,11 +94,8 @@ export const generateMonthlyReport = async (month, year, companyId, employeeId =
         totalAbsent: {
           $sum: { $cond: [{ $eq: ["$status", "ABSENT"] }, 1, 0] }
         },
-        totalLate: {
-          $sum: { $cond: [{ $eq: ["$status", "LATE"] }, 1, 0] }
-        },
-        totalHalfDay: {
-          $sum: { $cond: [{ $eq: ["$status", "HALFDAY"] }, 1, 0] }
+        totalLeave: {
+          $sum: { $cond: [{ $eq: ["$status", "LEAVE"] }, 1, 0] }
         },
         records: { $push: "$$ROOT" }
       }
@@ -119,13 +116,18 @@ export const generateMonthlyReport = async (month, year, companyId, employeeId =
         employeeId: "$employeeDetails.employeeId",
         totalPresent: 1,
         totalAbsent: 1,
-        totalLate: 1,
-        totalHalfDay: 1,
+        totalLeave: 1,
         attendanceRate: {
-            $multiply: [
+          $cond: [
+            { $gt: [{ $add: ["$totalPresent", "$totalAbsent"] }, 0] },
+            {
+              $multiply: [
                 { $divide: ["$totalPresent", { $add: ["$totalPresent", "$totalAbsent"] }] },
                 100
-            ]
+              ]
+            },
+            0
+          ]
         }
       }
     }

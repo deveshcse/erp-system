@@ -5,7 +5,7 @@ export const markAttendanceValidator = [
   body("date").optional().isISO8601().toDate().withMessage("Invalid date format"),
   body("checkIn").optional().isISO8601().toDate().withMessage("Invalid check-in time"),
   body("checkOut").optional().isISO8601().toDate().withMessage("Invalid check-out time"),
-  body("status").optional().isIn(["PRESENT", "ABSENT", "LATE", "HALFDAY"]).withMessage("Invalid status"),
+  body("status").optional().isIn(["PRESENT", "ABSENT", "LEAVE"]).withMessage("Invalid status"),
 ];
 
 export const getAttendanceValidator = [
