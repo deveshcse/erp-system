@@ -11,6 +11,8 @@ import employeeRouter from './routes/employee.routes.js';
 import attendanceRouter from './routes/attendance.routes.js';
 import payrollRouter from './routes/payroll.routes.js';
 import taskRouter from './routes/task.routes.js';
+import leadRouter from './routes/lead.routes.js';
+import quotationRouter from './routes/quotation.routes.js';
 
 const app = express();
 
@@ -44,6 +46,8 @@ app.use("/api/v1/employees", employeeRouter);
 app.use("/api/v1/attendance", attendanceRouter);
 app.use("/api/v1/payroll", payrollRouter);
 app.use("/api/v1/tasks", taskRouter);
+app.use("/api/v1/leads", leadRouter);
+app.use("/api/v1/quotations", quotationRouter);
 
 // Root Route for Health Check
 app.get("/", (req, res) => {
