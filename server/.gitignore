@@ -35,3 +35,8 @@ pnpm-debug.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+
+scripts/
+
+example.routes.js
