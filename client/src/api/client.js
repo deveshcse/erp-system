@@ -34,7 +34,12 @@ apiClient.interceptors.response.use(
     const original = error.config;
 
     // If 401 and NOT already a retry, attempt silent refresh
-    if (error.response?.status === 401 && !original._retry) {
+    // Ensure we don't refresh for the refresh endpoint itself to avoid infinite loops
+    if (
+      error.response?.status === 401 && 
+      !original._retry && 
+      !original.url.includes('/auth/refresh-token')
+    ) {
       if (isRefreshing) {
         // Queue subsequent requests while refreshing
         return new Promise((resolve, reject) => {
@@ -52,8 +57,8 @@ apiClient.interceptors.response.use(
 
       try {
         // The refresh-token cookie is sent automatically (withCredentials: true)
-        const { data } = await apiClient.post('/auth/refresh');
-        const newToken = data.token;
+        const { data } = await apiClient.post('/auth/refresh-token');
+        const newToken = data.data.accessToken;
         tokenManager.set(newToken);
         processQueue(null, newToken);
         original.headers.Authorization = `Bearer ${newToken}`;

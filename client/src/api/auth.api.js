@@ -4,8 +4,8 @@ export const authApi = {
   /** Login — server sets httpOnly refresh-token cookie; response contains access token */
   login: (credentials) => apiClient.post('/auth/login', credentials),
 
-  /** Exchange a refresh token for a new access token */
-  refresh: (refreshToken) => apiClient.post('/auth/refresh', { refreshToken }),
+  /** Exchange a refresh token for a new access token (sent via cookie) */
+  refresh: () => apiClient.post('/auth/refresh-token'),
 
   /** Register a new user (SUPER_ADMIN only) */
   register: (data) => apiClient.post('/auth/register', data),

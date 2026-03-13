@@ -19,14 +19,8 @@ export const tokenManager = {
   set: (token) => { _accessToken = token; },
   clear: () => { _accessToken = null; },
 
-  // ── Refresh token (sessionStorage) ─────────────────────
-  getRefresh: () => sessionStorage.getItem(REFRESH_KEY),
-  setRefresh: (token) => sessionStorage.setItem(REFRESH_KEY, token),
-  clearRefresh: () => sessionStorage.removeItem(REFRESH_KEY),
-
   // ── Clear everything ────────────────────────────────────
   clearAll: () => {
     _accessToken = null;
-    sessionStorage.removeItem(REFRESH_KEY);
   },
 };

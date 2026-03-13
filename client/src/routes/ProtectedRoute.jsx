@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-
+import { Loader2 } from 'lucide-react';
 /**
  * Wraps protected routes.
  * Redirects to /login if the user is not authenticated.
@@ -11,7 +11,7 @@ const ProtectedRoute = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="w-8 h-8 border-4 border-gray-300 border-t-gray-800 rounded-full animate-spin" />
+        <Loader2 className="w-8 h-8 animate-spin" />
       </div>
     );
   }

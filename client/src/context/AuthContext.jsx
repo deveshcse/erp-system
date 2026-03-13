@@ -14,22 +14,13 @@ export const AuthProvider = ({ children }) => {
    */
   useEffect(() => {
     const rehydrate = async () => {
-      const storedRefresh = tokenManager.getRefresh();
-
-      if (!storedRefresh) {
-        // No refresh token — definitely not logged in
-        setIsLoading(false);
-        return;
-      }
-
       try {
-        const { data } = await authApi.refresh(storedRefresh);
-        const { user: freshUser, accessToken, refreshToken } = data.data;
+        const { data } = await authApi.refresh();
+        const { user: freshUser, accessToken } = data.data;
         tokenManager.set(accessToken);
-        tokenManager.setRefresh(refreshToken);
         setUser(freshUser);
-      } catch {
-        // Refresh token expired or invalid — clear everything
+      } catch (error) {
+        // Refresh token expired, invalid, or doesn't exist — keep user logged out
         tokenManager.clearAll();
         setUser(null);
       } finally {
@@ -40,9 +31,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   /** Called after successful login with the values from the API response */
-  const login = useCallback((userData, accessToken, refreshToken) => {
+  const login = useCallback((userData, accessToken) => {
     tokenManager.set(accessToken);
-    tokenManager.setRefresh(refreshToken);
     setUser(userData);
   }, []);
 
