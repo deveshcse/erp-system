@@ -5,24 +5,35 @@ import errorHandler from './middlewares/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpec from './docs/swagger.js';
 import healthcheckRouter from './routes/healthcheck.routes.js';
+import authRouter from './routes/auth.routes.js';
 
 const app = express();
 
 // Global Middlewares
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN === "*" ? true : process.env.CORS_ORIGIN,
     credentials: true
 }));
+
+// Request Logger
+if (process.env.NODE_ENV === "development") {
+    app.use((req, res, next) => {
+        console.log(`${req.method} ${req.url}`);
+        next();
+    });
+}
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
+app.use(cookieParser());
 
 // Swagger Documentation
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use("/api/v1", healthcheckRouter);
+app.use("/api/v1/auth", authRouter);
 
 // Root Route for Health Check
 app.get("/", (req, res) => {

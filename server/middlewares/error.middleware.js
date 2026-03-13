@@ -12,8 +12,11 @@ const errorHandler = (err, req, res, next) => {
   }
 
   const response = {
-    ...error,
+    success: error.success,
+    statusCode: error.statusCode,
     message: error.message,
+    errors: error.errors,
+    data: error.data,
     ...(process.env.NODE_ENV === "development" ? { stack: error.stack } : {}),
   };
 
