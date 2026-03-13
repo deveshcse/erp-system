@@ -18,10 +18,7 @@ import invoiceRouter from './routes/invoice.routes.js';
 const app = express();
 
 // Global Middlewares
-app.use(cors({
-    origin: process.env.CORS_ORIGIN === "*" ? true : process.env.CORS_ORIGIN,
-    credentials: true
-}));
+app.use(cors({ credentials: true }));
 
 // Request Logger
 if (process.env.NODE_ENV === "development") {

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, logout, register } from "../controllers/auth.controller.js";
+import { login, logout, register, refreshToken } from "../controllers/auth.controller.js";
 import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import { registerValidator, loginValidator } from "../validators/auth.validator.js";
 
@@ -79,5 +79,24 @@ router.route("/login").post(loginValidator, login);
  *       - bearerAuth: []
  */
 router.route("/logout").post(verifyJWT, logout);
+
+/**
+ * @swagger
+ * /auth/refresh-token:
+ *   post:
+ *     summary: Refresh access token using a refresh token
+ *     tags: [Auth]
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken: { type: string, description: "Required only if not sent as a cookie" }
+ *     responses:
+ *       200:
+ *         description: New access and refresh tokens issued
+ */
+router.route("/refresh-token").post(refreshToken);
 
 export default router;

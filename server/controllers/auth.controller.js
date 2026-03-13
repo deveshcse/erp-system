@@ -38,7 +38,7 @@ export const login = asyncHandler(async (req, res) => {
     .json(
       new ApiResponse(
         200,
-        { user, accessToken, refreshToken },
+        { user, accessToken },
         "User logged in successfully"
       )
     );
@@ -57,4 +57,28 @@ export const logout = asyncHandler(async (req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged out successfully"));
+});
+
+export const refreshToken = asyncHandler(async (req, res) => {
+  // Accept token from cookie (web) or request body (mobile/API clients)
+  const incomingRefreshToken = req.cookies?.refreshToken || req.body?.refreshToken;
+
+  const { user, accessToken, refreshToken } = await authService.refreshAccessToken(incomingRefreshToken);
+
+  const options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  };
+
+  return res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        { user, accessToken },
+        "Access token refreshed successfully"
+      )
+    );
 });

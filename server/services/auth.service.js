@@ -1,5 +1,6 @@
 import { User } from "../models/user.model.js";
 import ApiError from "../utils/ApiError.js";
+import jwt from "jsonwebtoken";
 
 export const registerUser = async (userData) => {
   const { name, email, password, role, companyId } = userData;
@@ -63,4 +64,37 @@ export const logoutUser = async (userId) => {
       new: true,
     }
   );
+};
+
+export const refreshAccessToken = async (incomingRefreshToken) => {
+  if (!incomingRefreshToken) {
+    throw new ApiError(401, "Refresh token is required");
+  }
+
+  let decoded;
+  try {
+    decoded = jwt.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET);
+  } catch (err) {
+    throw new ApiError(401, "Invalid or expired refresh token");
+  }
+
+  const user = await User.findById(decoded._id);
+  if (!user) {
+    throw new ApiError(401, "User not found");
+  }
+
+  if (user.refreshToken !== incomingRefreshToken) {
+    throw new ApiError(401, "Refresh token has been revoked or already used");
+  }
+
+  // Rotate tokens — issue a new access + refresh token pair
+  const accessToken = user.generateAccessToken();
+  const refreshToken = user.generateRefreshToken();
+
+  user.refreshToken = refreshToken;
+  await user.save({ validateBeforeSave: false });
+
+  const updatedUser = await User.findById(user._id).select("-password -refreshToken");
+
+  return { user: updatedUser, accessToken, refreshToken };
 };
