@@ -43,8 +43,16 @@ const employeeSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["ACTIVE", "INACTIVE", "TERMINATED", "ON_LEAVE"],
+      enum: ["ACTIVE", "INACTIVE"],
       default: "ACTIVE",
+    },
+    allowances: {
+      type: Number,
+      default: 0,
+    },
+    deductions: {
+      type: Number,
+      default: 0,
     },
     companyId: {
       type: Schema.Types.ObjectId,
