@@ -15,6 +15,8 @@ import TasksPage from '../pages/tasks/TasksPage';
 import LeadsPage from '../pages/leads/LeadsPage';
 import QuotationsPage from '../pages/quotations/QuotationsPage';
 import InvoicesPage from '../pages/invoices/InvoicesPage';
+import CompaniesPage from '../pages/companies/CompaniesPage';
+import ReportsPage from '../pages/reports/ReportsPage';
 
 const AppRoutes = () => {
   return (
@@ -33,7 +35,13 @@ const AppRoutes = () => {
         <Route element={<DashboardLayout />}>
           <Route path="/" element={<DashboardPage />} />
           
-          {/* Admin Specific */}
+          {/* Super Admin Specific */}
+          <Route element={<RoleProtectedRoute allowedRoles={['SUPER_ADMIN']} />}>
+            <Route path="/companies" element={<CompaniesPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
+          </Route>
+
+          {/* Company Admin & Super Admin (Shared) */}
           <Route element={<RoleProtectedRoute allowedRoles={['SUPER_ADMIN', 'COMPANY_ADMIN']} />}>
             <Route path="/employees" element={<EmployeesPage />} />
             <Route path="/leads" element={<LeadsPage />} />
@@ -50,6 +58,11 @@ const AppRoutes = () => {
           <Route element={<RoleProtectedRoute allowedRoles={['COMPANY_ADMIN', 'EMPLOYEE']} />}>
             <Route path="/attendance" element={<AttendancePage />} />
             <Route path="/tasks" element={<TasksPage />} />
+          </Route>
+
+          {/* Employee Specific */}
+          <Route element={<RoleProtectedRoute allowedRoles={['EMPLOYEE']} />}>
+            <Route path="/payroll/payslips" element={<PayrollPage />} />
           </Route>
         </Route>
       </Route>
