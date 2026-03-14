@@ -66,7 +66,7 @@ const AttendancePage = () => {
 
   return (
     <div className="flex flex-col h-full gap-6 text-[#1A1A1A]">
-      <div className="flex-shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
             Attendance
@@ -89,7 +89,7 @@ const AttendancePage = () => {
       </div>
 
       {/* Tabs & Filters */}
-      <div className="flex-shrink-0 flex flex-col lg:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+      <div className="shrink-0 flex flex-col lg:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
         <div className="flex p-1 bg-gray-100 rounded-xl w-full lg:w-auto">
           <button
             onClick={() => setActiveTab("history")}
@@ -144,11 +144,11 @@ const AttendancePage = () => {
       </div>
 
       {activeTab === "history" ? (
-        <div className="flex-1 min-h-0 min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+        <div className="flex-1  min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
           <AttendanceTable records={records} isLoading={isLoadingRecords} />
 
           {/* Fixed Pagination at Bottom */}
-          <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+          <div className="shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
               Page {pagination.page} of {pagination.totalPages || 1}
             </p>
@@ -189,7 +189,7 @@ const AttendancePage = () => {
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {reports.map((report) => (
-                  <tr key={report.employeeId || Math.random()} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={report.employeeId} className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-6 py-4">
                       <p className="text-sm font-semibold text-gray-900">{report.fullName}</p>
                       <p className="text-xs text-gray-400 uppercase tracking-tighter">{report.employeeId}</p>
