@@ -8,7 +8,7 @@ export const createInvoiceValidator = [
   body("items.*.quantity").isNumeric({ min: 1 }).withMessage("Quantity must be at least 1"),
   body("items.*.price").isNumeric({ min: 0 }).withMessage("Price must be a positive number"),
   body("tax").optional().isNumeric({ min: 0 }).withMessage("Tax must be a positive number"),
-  body("paymentStatus").optional().isIn(["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE", "CANCELLED"]),
+  body("paymentStatus").optional().isIn(["PENDING", "PAID", "PARTIALLY_PAID"]),
 ];
 
 export const getInvoiceValidator = [
@@ -20,5 +20,5 @@ export const listInvoicesValidator = [
   query("limit").optional().isInt({ min: 1, max: 100 }).toInt(),
   query("invoiceNumber").optional().trim(),
   query("customerName").optional().trim(),
-  query("paymentStatus").optional().isIn(["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE", "CANCELLED"]),
+  query("paymentStatus").optional().isIn(["PENDING", "PAID", "PARTIALLY_PAID"]),
 ];

@@ -29,8 +29,8 @@ const invoiceSchema = new Schema(
     },
     paymentStatus: {
       type: String,
-      enum: ["UNPAID", "PARTIALLY_PAID", "PAID", "OVERDUE", "CANCELLED"],
-      default: "UNPAID",
+      enum: ["PENDING", "PAID", "PARTIALLY_PAID"],
+      default: "PENDING",
     },
     companyId: {
       type: Schema.Types.ObjectId,
