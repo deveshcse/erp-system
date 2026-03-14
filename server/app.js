@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import errorHandler from './middlewares/error.middleware.js';
 import swaggerUi from 'swagger-ui-express';
@@ -19,7 +21,12 @@ import dashboardRouter from './routes/dashboard.routes.js';
 const app = express();
 
 // Global Middlewares
-app.use(cors({ credentials: true }));
+app.use(helmet());
+app.use(compression());
+app.use(cors({ 
+    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
+    credentials: true 
+}));
 
 // Request Logger
 if (process.env.NODE_ENV === "development") {
