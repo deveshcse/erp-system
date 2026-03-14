@@ -30,10 +30,10 @@ const PayslipCard = ({ payslip }) => {
 
           <div className="text-right">
             <p className="font-medium text-gray-900">
-              Test ERP Corp
+              {payslip.companyId?.companyName || "Company"}
             </p>
             <p className="text-xs text-gray-500">
-              Corporate Headquarters
+              Payroll Statement
             </p>
           </div>
         </div>

@@ -53,14 +53,14 @@ const AttendanceTable = ({ records, isLoading }) => {
               <td className="px-6 py-4">
                 <div className="flex items-center gap-3">
                   <div className="w-7 h-7 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center">
-                    {record.employee?.fullName?.[0] || "E"}
+                    {record.employeeId?.fullName?.[0] || "E"}
                   </div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">
-                      {record.employee?.fullName || "N/A"}
+                      {record.employeeId?.fullName || "N/A"}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {record.employee?.employeeId}
+                      {record.employeeId?.employeeId}
                     </p>
                   </div>
                 </div>
@@ -78,8 +78,8 @@ const AttendanceTable = ({ records, isLoading }) => {
                 <div className="text-xs text-gray-600 flex flex-col gap-0.5">
                   <span className="flex items-center gap-1 font-medium">
                     <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
-                    {record.clockIn
-                      ? new Date(record.clockIn).toLocaleTimeString([], {
+                    {record.checkIn
+                      ? new Date(record.checkIn).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })
@@ -87,8 +87,8 @@ const AttendanceTable = ({ records, isLoading }) => {
                   </span>
                   <span className="flex items-center gap-1 text-gray-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                    {record.clockOut
-                      ? new Date(record.clockOut).toLocaleTimeString([], {
+                    {record.checkOut
+                      ? new Date(record.checkOut).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })

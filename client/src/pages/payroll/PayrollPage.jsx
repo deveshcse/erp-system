@@ -27,13 +27,13 @@ const PayrollPage = () => {
 
   // Fetch Payslips (either for specific user or all if admin)
   const { data: payslipData, isLoading: isLoadingSlips } = useQuery({
-    queryKey: ['payslips', isAdmin ? 'all' : user?._id, selectedMonth, selectedYear, payslipParams],
+    queryKey: ['payslips', isAdmin ? 'all' : 'my', selectedMonth, selectedYear, payslipParams],
     queryFn: () => {
       const formattedMonth = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}`;
       const params = { ...payslipParams, month: formattedMonth };
       return isAdmin 
         ? payrollApi.getAll(params)
-        : payrollApi.getPayslips(user?._id, params);
+        : payrollApi.getMyPayslips(params);
     },
     enabled: !!user?._id && activeTab === 'payslips',
   });

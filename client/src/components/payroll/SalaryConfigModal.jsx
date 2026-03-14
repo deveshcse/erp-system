@@ -19,7 +19,11 @@ const SalaryConfigModal = ({ employee, onSave, onCancel, isSaving }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSave(formData);
+    onSave({
+      basicSalary: Number(formData.basicSalary),
+      allowances: Number(formData.allowances),
+      deductions: Number(formData.deductions),
+    });
   };
 
   if (!employee) return null;
