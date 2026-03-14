@@ -4,6 +4,19 @@ import ApiError from "../utils/ApiError.js";
 
 import { Attendance } from "../models/attendance.model.js";
 
+/**
+ * Calculate total weekdays (Mon-Fri) in a given month.
+ */
+const getTotalWeekdaysInMonth = (year, month) => {
+  const totalDays = new Date(year, month, 0).getDate();
+  let weekdays = 0;
+  for (let d = 1; d <= totalDays; d++) {
+    const day = new Date(year, month - 1, d).getDay();
+    if (day !== 0 && day !== 6) weekdays++;
+  }
+  return weekdays;
+};
+
 export const processPayroll = async (payrollData, companyId) => {
   const { 
     employeeId, 
@@ -18,6 +31,9 @@ export const processPayroll = async (payrollData, companyId) => {
   const [year, monthNum] = month.split("-").map(Number);
   const startDate = new Date(year, monthNum - 1, 1);
   const endDate = new Date(year, monthNum, 0);
+
+  // Calculate total weekdays in the month for proration
+  const totalWeekdays = getTotalWeekdaysInMonth(year, monthNum);
 
   // If employeeId is provided, process single, otherwise process all active employees
   const query = { companyId, status: "ACTIVE" };
@@ -48,7 +64,11 @@ export const processPayroll = async (payrollData, companyId) => {
     }
 
     const basicSalary = employee.salary;
-    const netSalary = basicSalary + allowances - deductions;
+
+    // Prorate salary based on attendance: (basicSalary / totalWeekdays) * workingDays
+    const dailyRate = totalWeekdays > 0 ? basicSalary / totalWeekdays : 0;
+    const proratedSalary = Math.round(dailyRate * workingDays * 100) / 100;
+    const netSalary = Math.round((proratedSalary + allowances - deductions) * 100) / 100;
 
     const payslip = await Payslip.findOneAndUpdate(
       { employeeId: employee._id, month },
@@ -94,9 +114,46 @@ export const getEmployeePayslips = async (employeeId, filters, user) => {
 };
 
 export const getAllCompanyPayslips = async (companyId, filters) => {
-  const { month } = filters;
+  const { month, page = 1, limit = 10 } = filters;
+  const skip = (page - 1) * limit;
   const query = { companyId };
 
+  if (month) {
+    query.month = month;
+  }
+
+  const payslips = await Payslip.find(query)
+    .populate("employeeId", "fullName employeeId email department designation")
+    .skip(skip)
+    .limit(Number(limit))
+    .sort({ month: -1 });
+
+  const total = await Payslip.countDocuments(query);
+
+  return {
+    payslips,
+    pagination: {
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+/**
+ * Employee self-service: get own payslips using the logged-in user's email.
+ */
+export const getMyPayslips = async (user, filters) => {
+  const { month } = filters;
+
+  // Resolve the Employee record from the User's email
+  const employeeRecord = await Employee.findOne({ email: user.email });
+  if (!employeeRecord) {
+    throw new ApiError(404, "No employee record found for your account");
+  }
+
+  const query = { employeeId: employeeRecord._id };
   if (month) {
     query.month = month;
   }

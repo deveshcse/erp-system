@@ -43,3 +43,11 @@ export const getAllPayslips = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, payslips, "Company payslips fetched successfully"));
 });
+
+export const getMyPayslips = asyncHandler(async (req, res) => {
+  const payslips = await payrollService.getMyPayslips(req.user, req.query);
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, payslips, "Your payslips fetched successfully"));
+});

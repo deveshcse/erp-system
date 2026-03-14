@@ -36,7 +36,7 @@ router.use(verifyJWT);
  *               date: { type: string, format: date }
  *               checkIn: { type: string, format: date-time }
  *               checkOut: { type: string, format: date-time }
- *               status: { type: string, enum: [PRESENT, ABSENT, LATE, HALFDAY] }
+ *               status: { type: string, enum: [PRESENT, ABSENT, LEAVE] }
  */
 router.route("/mark").post(
     authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"), 

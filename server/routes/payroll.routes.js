@@ -2,7 +2,8 @@ import { Router } from "express";
 import { 
     processPayroll, 
     getPayslips,
-    getAllPayslips
+    getAllPayslips,
+    getMyPayslips
 } from "../controllers/payroll.controller.js";
 import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import { 
@@ -83,5 +84,20 @@ router.route("/all").get(
     authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"),
     getAllPayslips
 );
+
+/**
+ * @swagger
+ * /payroll/my-payslips:
+ *   get:
+ *     summary: View own payslips (Employee self-service)
+ *     tags: [Payroll]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: month
+ *         schema: { type: string, example: "2024-03" }
+ */
+router.route("/my-payslips").get(getMyPayslips);
 
 export default router;

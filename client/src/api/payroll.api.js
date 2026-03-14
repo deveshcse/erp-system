@@ -10,4 +10,7 @@ export const payrollApi = {
 
   /** View all payslips for the company — Admin only (GET /payroll/all) */
   getAll: (params) => apiClient.get('/payroll/all', { params }),
+
+  /** View own payslips — Employee self-service (GET /payroll/my-payslips) */
+  getMyPayslips: (params) => apiClient.get('/payroll/my-payslips', { params }),
 };

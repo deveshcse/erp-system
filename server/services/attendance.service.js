@@ -119,10 +119,10 @@ export const generateMonthlyReport = async (month, year, companyId, employeeId =
         totalLeave: 1,
         attendanceRate: {
           $cond: [
-            { $gt: [{ $add: ["$totalPresent", "$totalAbsent"] }, 0] },
+            { $gt: [{ $add: ["$totalPresent", "$totalAbsent", "$totalLeave"] }, 0] },
             {
               $multiply: [
-                { $divide: ["$totalPresent", { $add: ["$totalPresent", "$totalAbsent"] }] },
+                { $divide: ["$totalPresent", { $add: ["$totalPresent", "$totalAbsent", "$totalLeave"] }] },
                 100
               ]
             },

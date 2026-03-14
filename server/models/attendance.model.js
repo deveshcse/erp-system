@@ -14,15 +14,18 @@ const attendanceSchema = new Schema(
       index: true,
     },
     checkIn: {
-      type: String, // HH:mm format or full Date
+      type: Date,
     },
     checkOut: {
-      type: String, // HH:mm format or full Date
+      type: Date,
     },
     status: {
       type: String,
       enum: ["PRESENT", "ABSENT", "LEAVE"],
       default: "PRESENT",
+    },
+    note: {
+      type: String,
     },
     companyId: {
         type: Schema.Types.ObjectId,
