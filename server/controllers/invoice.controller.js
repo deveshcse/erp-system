@@ -30,3 +30,20 @@ export const listInvoices = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, result, "Invoices fetched successfully"));
 });
+
+export const updateInvoiceStatus = asyncHandler(async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    throw new ApiError(400, "Validation Error", errors.array());
+  }
+
+  const invoice = await invoiceService.updateInvoiceStatus(
+    req.params.id,
+    req.body.paymentStatus,
+    req.user.companyId
+  );
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, invoice, "Invoice status updated successfully"));
+});

@@ -9,4 +9,7 @@ export const invoicesApi = {
 
   /** Get invoice details (GET /invoices/{id}) */
   getById: (id) => apiClient.get(`/invoices/${id}`),
+
+  /** Update invoice payment status — Admin only (PATCH /invoices/{id}/status) */
+  updateStatus: (id, data) => apiClient.patch(`/invoices/${id}/status`, data),
 };

@@ -9,4 +9,7 @@ export const leadsApi = {
 
   /** Update lead details (PUT /leads/{id}) */
   update: (id, data) => apiClient.put(`/leads/${id}`, data),
+
+  /** Delete a lead — Admin only (DELETE /leads/{id}) */
+  delete: (id) => apiClient.delete(`/leads/${id}`),
 };

@@ -40,3 +40,10 @@ export const getLeads = asyncHandler(async (req, res) => {
     .status(200)
     .json(new ApiResponse(200, result, "Leads fetched successfully"));
 });
+
+export const deleteLead = asyncHandler(async (req, res) => {
+  await leadService.deleteLead(req.params.id, req.user.companyId);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, null, "Lead deleted successfully"));
+});

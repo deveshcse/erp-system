@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Plus, ListTodo, Clock, Loader, CheckCircle2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 import { tasksApi } from "../../api/tasks.api";
 import { useAuth } from "../../context/AuthContext";
@@ -35,7 +36,11 @@ const TasksPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
       setIsModalOpen(false);
+      toast.success("Task created and assigned");
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to create task");
+    }
   });
 
   const updateStatusMutation = useMutation({
@@ -43,7 +48,11 @@ const TasksPage = () => {
       tasksApi.updateStatus(id, status),
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
+      toast.success("Task status updated");
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || "Failed to update status");
+    }
   });
 
   const handlePageChange = (newPage) => {

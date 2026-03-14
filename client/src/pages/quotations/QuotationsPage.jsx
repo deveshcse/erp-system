@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { quotationsApi } from '../../api/quotations.api';
 import QuotationTable from '../../components/quotations/QuotationTable';
 import CreateQuotationForm from '../../components/quotations/CreateQuotationForm';
@@ -22,9 +23,10 @@ const QuotationPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['quotations']);
       setIsModalOpen(false);
+      toast.success('Quotation created successfully');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to create quotation');
+      toast.error(err.response?.data?.message || 'Failed to create quotation');
     }
   });
 
@@ -83,7 +85,7 @@ const QuotationPage = () => {
           },
           {
             label: "Total Quoted Value",
-            value: `$${stats.totalValue.toFixed(2)}`,
+            value: `₹${stats.totalValue.toFixed(2)}`,
             color: "green",
           },
         ].map((stat) => (
@@ -161,9 +163,9 @@ const QuotationPage = () => {
                   <div key={i} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
                     <div>
                       <span className="font-bold text-sm text-gray-900 block">{item.name}</span>
-                      <span className="text-xs text-gray-500 font-medium">Qty: {item.quantity} × ${item.price.toFixed(2)}</span>
+                      <span className="text-xs text-gray-500 font-medium">Qty: {item.quantity} × ₹{item.price.toFixed(2)}</span>
                     </div>
-                    <span className="font-bold text-sm text-gray-900">${(item.quantity * item.price).toFixed(2)}</span>
+                    <span className="font-bold text-sm text-gray-900">₹{(item.quantity * item.price).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
@@ -173,7 +175,7 @@ const QuotationPage = () => {
                     <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Total</span>
                     <span className="text-xs text-gray-400">Includes {viewingQuotation.tax}% Tax</span>
                  </div>
-                 <span className="text-2xl font-black">${viewingQuotation.totalAmount.toFixed(2)}</span>
+                 <span className="text-2xl font-black">₹{viewingQuotation.totalAmount.toFixed(2)}</span>
               </div>
             </div>
             <div className="p-4 border-t bg-gray-50 flex justify-end">

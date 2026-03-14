@@ -25,8 +25,8 @@ const companySchema = new Schema(
     },
     gstNumber: {
       type: String,
-      required: true,
       unique: true,
+      sparse: true, // allows multiple null values with unique index
     },
     adminUserId: {
       type: Schema.Types.ObjectId,

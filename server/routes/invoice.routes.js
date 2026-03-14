@@ -2,7 +2,8 @@ import { Router } from "express";
 import { 
     createInvoice, 
     getInvoice, 
-    listInvoices 
+    listInvoices,
+    updateInvoiceStatus
 } from "../controllers/invoice.controller.js";
 import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import { 
@@ -44,7 +45,7 @@ router.use(authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN", "EMPLOYEE"));
  *                     quantity: { type: number }
  *                     price: { type: number }
  *               tax: { type: number }
- *               paymentStatus: { type: string, enum: [UNPAID, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED] }
+ *               paymentStatus: { type: string, enum: [PENDING, PAID, PARTIALLY_PAID] }
  */
 router.route("/").post(
     authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"), 
@@ -69,7 +70,7 @@ router.route("/").post(
  *         schema: { type: string }
  *       - in: query
  *         name: paymentStatus
- *         schema: { type: string, enum: [UNPAID, PARTIALLY_PAID, PAID, OVERDUE, CANCELLED] }
+ *         schema: { type: string, enum: [PENDING, PAID, PARTIALLY_PAID] }
  */
 router.route("/").get(listInvoicesValidator, listInvoices);
 
@@ -88,5 +89,33 @@ router.route("/").get(listInvoicesValidator, listInvoices);
  *         schema: { type: string }
  */
 router.route("/:id").get(getInvoiceValidator, getInvoice);
+
+/**
+ * @swagger
+ * /invoices/{id}/status:
+ *   patch:
+ *     summary: Update invoice payment status (Admin only)
+ *     tags: [Invoices]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [paymentStatus]
+ *             properties:
+ *               paymentStatus: { type: string, enum: [PENDING, PAID, PARTIALLY_PAID] }
+ */
+router.route("/:id/status").patch(
+    authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"),
+    updateInvoiceStatus
+);
 
 export default router;

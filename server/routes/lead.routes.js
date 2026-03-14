@@ -2,7 +2,8 @@ import { Router } from "express";
 import { 
     createLead, 
     updateLead, 
-    getLeads 
+    getLeads,
+    deleteLead
 } from "../controllers/lead.controller.js";
 import { verifyJWT, authorizeRoles } from "../middlewares/auth.middleware.js";
 import { 
@@ -40,7 +41,7 @@ router.use(authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN", "EMPLOYEE"));
  *               phone: { type: string }
  *               email: { type: string }
  *               leadSource: { type: string }
- *               status: { type: string, enum: [NEW, CONTACTED, QUALIFIED, PROPOSAL, NEGOTIATION, WON, LOST] }
+ *               status: { type: string, enum: [NEW, CONTACTED, NEGOTIATION, CLOSED, LOST] }
  *               notes: { type: string }
  */
 router.route("/").post(authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"), createLeadValidator, createLead);
@@ -65,7 +66,7 @@ router.route("/").post(authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"), createLea
  *         schema: { type: string }
  *       - in: query
  *         name: status
- *         schema: { type: string, enum: [NEW, CONTACTED, QUALIFIED, PROPOSAL, NEGOTIATION, WON, LOST] }
+ *         schema: { type: string, enum: [NEW, CONTACTED, NEGOTIATION, CLOSED, LOST] }
  */
 router.route("/").get(getLeadsValidator, getLeads);
 
@@ -93,9 +94,25 @@ router.route("/").get(getLeadsValidator, getLeads);
  *               companyName: { type: string }
  *               phone: { type: string }
  *               email: { type: string }
- *               status: { type: string, enum: [NEW, CONTACTED, QUALIFIED, PROPOSAL, NEGOTIATION, WON, LOST] }
+ *               status: { type: string, enum: [NEW, CONTACTED, NEGOTIATION, CLOSED, LOST] }
  *               notes: { type: string }
  */
 router.route("/:id").put(updateLeadValidator, updateLead);
+
+/**
+ * @swagger
+ * /leads/{id}:
+ *   delete:
+ *     summary: Delete a lead (Admin only)
+ *     tags: [Leads]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ */
+router.route("/:id").delete(authorizeRoles("COMPANY_ADMIN", "SUPER_ADMIN"), deleteLead);
 
 export default router;
