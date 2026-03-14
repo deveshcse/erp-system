@@ -25,7 +25,7 @@ const leadSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["NEW", "CONTACTED", "QUALIFIED", "LOST", "WON"],
+      enum: ["NEW", "CONTACTED", "NEGOTIATION", "CLOSED", "LOST"],
       default: "NEW",
     },
     notes: {
