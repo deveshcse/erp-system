@@ -1,15 +1,153 @@
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { companiesApi } from '../../api/companies.api';
+import CompanyTable from '../../components/companies/CompanyTable';
+import CompanyForm from '../../components/companies/CompanyForm';
+
 const CompaniesPage = () => {
+  const queryClient = useQueryClient();
+  const [params, setParams] = useState({ page: 1, limit: 10, search: '' });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Fetch Companies
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['companies', params],
+    queryFn: () => companiesApi.getAll(params),
+  });
+
+  // Mutate: Add Company
+  const addMutation = useMutation({
+    mutationFn: (newCompany) => companiesApi.create(newCompany),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['companies']);
+      closeModal();
+    },
+  });
+
+  const handleSearch = (e) => {
+    setParams((prev) => ({ ...prev, search: e.target.value, page: 1 }));
+  };
+
+  const handlePageChange = (newPage) => {
+    setParams((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = (formData) => {
+    addMutation.mutate(formData);
+  };
+
+  const companies = data?.data?.data?.companies || [];
+  const pagination = data?.data?.data?.pagination || { totalPages: 1, currentPage: 1 };
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Companies</h1>
-        <button className="bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-700 transition-colors">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 leading-tight">Companies</h1>
+          <p className="text-sm text-gray-500 mt-1">Manage partner companies in the platform</p>
+        </div>
+        <button
+          onClick={openModal}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition shadow-sm"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          </svg>
           Add Company
         </button>
       </div>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 h-64 flex items-center justify-center text-gray-400 italic">
-        Companies management list will appear here...
+
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search companies..."
+            value={params.search}
+            onChange={handleSearch}
+            className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-gray-900 focus:border-transparent outline-none transition"
+          />
+        </div>
       </div>
+
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          Failed to load companies. Please try again.
+        </div>
+      )}
+
+      {/* Adding error display for Add Mutation */}
+      {addMutation.isError && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          Failed to create company: {addMutation.error?.response?.data?.message || addMutation.error?.message}
+        </div>
+      )}
+
+      <CompanyTable
+        companies={companies}
+        isLoading={isLoading}
+      />
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <div className="flex items-center justify-between py-4">
+          <p className="text-xs text-gray-500">
+            Page {pagination.currentPage} of {pagination.totalPages}
+          </p>
+          <div className="flex gap-2">
+            <button
+              disabled={pagination.currentPage === 1}
+              onClick={() => handlePageChange(pagination.currentPage - 1)}
+              className="px-3 py-1.5 text-xs font-semibold border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 transition"
+            >
+              Previous
+            </button>
+            <button
+              disabled={pagination.currentPage === pagination.totalPages}
+              onClick={() => handlePageChange(pagination.currentPage + 1)}
+              className="px-3 py-1.5 text-xs font-semibold border border-gray-200 rounded-md hover:bg-gray-50 disabled:opacity-50 transition"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={closeModal}></div>
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="px-6 py-4 border-b flex items-center justify-between">
+              <h2 className="text-lg font-bold text-gray-900">
+                Add New Company
+              </h2>
+              <button onClick={closeModal} className="text-gray-400 hover:text-gray-900 transition">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[80vh]">
+              <CompanyForm
+                onSubmit={handleSubmit}
+                onCancel={closeModal}
+                isSubmitting={addMutation.isLoading}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
