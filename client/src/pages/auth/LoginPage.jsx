@@ -21,23 +21,9 @@ const LoginPage = () => {
     setError('');
 
     try {
-      // TODO: Replace with real API call:
-      // const { data } = await authApi.login(form);
-      // login(data.user, data.token);
-
-      // ── Dev mock: pick role based on email prefix ──
-      const role =
-        form.email.startsWith('super') ? 'SUPER_ADMIN' :
-        form.email.startsWith('emp')   ? 'EMPLOYEE'    :
-                                         'COMPANY_ADMIN';
-
-      const mockUser = {
-        id: 1,
-        name: 'Test User',
-        email: form.email || 'admin@example.com',
-        role,
-      };
-      login(mockUser, 'mock-jwt-token');
+      const { data } = await authApi.login(form);
+      // Backend returns { success: true, data: { user, accessToken }, ... }
+      login(data.data.user, data.data.accessToken);
       navigate('/');
     } catch (err) {
       setError(err?.response?.data?.message || 'Invalid email or password.');
