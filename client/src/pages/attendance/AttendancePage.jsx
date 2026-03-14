@@ -12,6 +12,7 @@ const AttendancePage = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('history'); // 'history' or 'report'
+  const [params, setParams] = useState({ page: 1, limit: 8 });
   const [filters, setFilters] = useState({
     startDate: new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0],
     endDate: new Date().toISOString().split('T')[0],
@@ -19,8 +20,8 @@ const AttendancePage = () => {
 
   // Fetch Attendance Records
   const { data: attendanceData, isLoading: isLoadingRecords } = useQuery({
-    queryKey: ['attendance', filters],
-    queryFn: () => attendanceApi.getAll(filters),
+    queryKey: ['attendance', filters, params],
+    queryFn: () => attendanceApi.getAll({ ...filters, ...params }),
   });
 
   // Fetch Monthly Report
@@ -49,76 +50,123 @@ const AttendancePage = () => {
     markMutation.mutate(formData);
   };
 
-  const records = attendanceData?.data?.data?.history || [];
+  const handlePageChange = (newPage) => {
+    setParams((prev) => ({ ...prev, page: newPage }));
+  };
+
+  const attendanceResult = attendanceData?.data?.data;
+  const records = attendanceResult?.history || [];
+  const pagination = attendanceResult?.pagination || { totalPages: 1, page: 1 };
   const reports = reportData?.data?.data || [];
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="flex flex-col h-full gap-6 text-[#1A1A1A]">
+      <div className="flex-shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight">Attendance Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Track employee presence and generate reports</p>
+          <h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
+            Attendance
+            <span className="text-[10px] font-black bg-gray-900 text-white px-2 py-0.5 rounded uppercase tracking-[0.2em]">
+              Log
+            </span>
+          </h1>
+          <p className="text-xs text-gray-400 font-bold uppercase tracking-widest mt-1">
+            Track employee presence and generate reports
+          </p>
         </div>
         {isAdmin && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-md text-xs font-black uppercase tracking-widest hover:bg-gray-800 transition shadow-lg shadow-gray-200"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
             Mark Attendance
           </button>
         )}
       </div>
 
       {/* Tabs & Filters */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-        <div className="flex p-1 bg-gray-50 rounded-lg w-full md:w-auto">
+      <div className="flex-shrink-0 flex flex-col lg:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+        <div className="flex p-1 bg-gray-100 rounded-xl w-full lg:w-auto">
           <button
-            onClick={() => setActiveTab('history')}
-            className={`flex-1 md:flex-none px-4 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${
-              activeTab === 'history' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            onClick={() => setActiveTab("history")}
+            className={`flex-1 lg:flex-none px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${
+              activeTab === "history"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             History
           </button>
           <button
-            onClick={() => setActiveTab('report')}
-            className={`flex-1 md:flex-none px-4 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 ${
-              activeTab === 'report' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            onClick={() => setActiveTab("report")}
+            className={`flex-1 lg:flex-none px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${
+              activeTab === "report"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             Monthly Report
           </button>
         </div>
 
-        <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex items-center gap-2 flex-1 md:flex-none">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">From</span>
+        <div className="flex items-center gap-4 w-full lg:w-auto">
+          <div className="flex items-center gap-2 flex-1 lg:flex-none bg-gray-50 px-3 py-2 rounded-xl border border-gray-100">
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+              From
+            </span>
             <input
               type="date"
               value={filters.startDate}
-              onChange={(e) => setFilters((prev) => ({ ...prev, startDate: e.target.value }))}
-              className="text-xs border-none bg-gray-50 rounded-md focus:ring-0 px-2 py-1.5 w-full font-medium"
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, startDate: e.target.value }))
+              }
+              className="text-xs border-none bg-transparent focus:ring-0 p-0 font-black w-28"
             />
           </div>
-          <div className="flex items-center gap-2 flex-1 md:flex-none">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">To</span>
+          <div className="flex items-center gap-2 flex-1 lg:flex-none bg-gray-50 px-3 py-2 rounded-xl border border-gray-100">
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">
+              To
+            </span>
             <input
               type="date"
               value={filters.endDate}
-              onChange={(e) => setFilters((prev) => ({ ...prev, endDate: e.target.value }))}
-              className="text-xs border-none bg-gray-50 rounded-md focus:ring-0 px-2 py-1.5 w-full font-medium"
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, endDate: e.target.value }))
+              }
+              className="text-xs border-none bg-transparent focus:ring-0 p-0 font-black w-28"
             />
           </div>
         </div>
       </div>
 
-      {activeTab === 'history' ? (
-        <AttendanceTable records={records} isLoading={isLoadingRecords} />
+      {activeTab === "history" ? (
+        <div className="flex-1 min-h-0 min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+          <AttendanceTable records={records} isLoading={isLoadingRecords} />
+
+          {/* Fixed Pagination at Bottom */}
+          <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              Page {pagination.page} of {pagination.totalPages || 1}
+            </p>
+            <div className="flex gap-2">
+              <button
+                disabled={pagination.page <= 1}
+                onClick={() => handlePageChange(pagination.page - 1)}
+                className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+              >
+                Previous
+              </button>
+              <button
+                disabled={pagination.page >= pagination.totalPages}
+                onClick={() => handlePageChange(pagination.page + 1)}
+                className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
       ) : (
-        <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
+        <div className="flex-1 min-h-0 overflow-auto bg-white rounded-xl border border-gray-100 shadow-sm">
           {isLoadingReport ? (
              <div className="w-full h-64 flex items-center justify-center">
              <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>

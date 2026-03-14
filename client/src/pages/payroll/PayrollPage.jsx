@@ -4,6 +4,7 @@ import { payrollApi } from '../../api/payroll.api';
 import { employeesApi } from '../../api/employees.api';
 import { useAuth } from '../../context/AuthContext';
 import PayslipTable from '../../components/payroll/PayslipTable';
+import SalaryStructureTable from '../../components/payroll/SalaryStructureTable';
 import PayslipCard from '../../components/payroll/PayslipCard';
 import SalaryConfigModal from '../../components/payroll/SalaryConfigModal';
 import { X } from 'lucide-react';
@@ -20,22 +21,27 @@ const PayrollPage = () => {
   const [activeTab, setActiveTab] = useState('payslips'); // 'payslips' or 'salary-management'
   const [editingSalaryEmployee, setEditingSalaryEmployee] = useState(null);
 
+  // Pagination states
+  const [payslipParams, setPayslipParams] = useState({ page: 1, limit: 10 });
+  const [employeeParams, setEmployeeParams] = useState({ page: 1, limit: 10 });
+
   // Fetch Payslips (either for specific user or all if admin)
   const { data: payslipData, isLoading: isLoadingSlips } = useQuery({
-    queryKey: ['payslips', isAdmin ? 'all' : user?._id, selectedMonth, selectedYear],
+    queryKey: ['payslips', isAdmin ? 'all' : user?._id, selectedMonth, selectedYear, payslipParams],
     queryFn: () => {
       const formattedMonth = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}`;
+      const params = { ...payslipParams, month: formattedMonth };
       return isAdmin 
-        ? payrollApi.getAll({ month: formattedMonth })
-        : payrollApi.getPayslips(user?._id, { month: formattedMonth });
+        ? payrollApi.getAll(params)
+        : payrollApi.getPayslips(user?._id, params);
     },
     enabled: !!user?._id && activeTab === 'payslips',
   });
 
   // Fetch All Employees (for salary management)
   const { data: employeesData, isLoading: isLoadingEmployees } = useQuery({
-    queryKey: ['employees', { limit: 1000 }],
-    queryFn: () => employeesApi.getAll({ limit: 1000 }),
+    queryKey: ['employees', employeeParams],
+    queryFn: () => employeesApi.getAll(employeeParams),
     enabled: isAdmin && activeTab === 'salary-management',
   });
 
@@ -71,43 +77,78 @@ const PayrollPage = () => {
     });
   };
 
-  const payslips = payslipData?.data?.data || [];
-  const employees = employeesData?.data?.data?.employees || [];
+  const payslipsResult = payslipData?.data?.data;
+  const payslips = Array.isArray(payslipsResult) ? payslipsResult : (payslipsResult?.payslips || []);
+  const payslipPagination = payslipsResult?.pagination || { totalPages: 1, page: 1 };
+
+  const employeesResult = employeesData?.data?.data;
+  const employees = employeesResult?.employees || [];
+  const employeePagination = employeesResult?.pagination || { totalPages: 1, page: 1 };
+
+  const handlePayslipPageChange = (newPage) => {
+    setPayslipParams(prev => ({ ...prev, page: newPage }));
+  };
+
+  const handleEmployeePageChange = (newPage) => {
+    setEmployeeParams(prev => ({ ...prev, page: newPage }));
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="flex flex-col h-full gap-4">
+      <div className="flex-shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight">Payroll Management</h1>
-          <p className="text-sm text-gray-500 mt-1">Review, process, and manage employee salaries</p>
+          <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+            Payroll Management
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Review, process, and manage employee salaries
+          </p>
         </div>
         {isAdmin && (
           <button
             onClick={() => setIsProcessModalOpen(true)}
             className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition shadow-sm"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+              />
             </svg>
-            Process {new Date(0, selectedMonth - 1).toLocaleString('default', { month: 'short' })} Payroll
+            Process{" "}
+            {new Date(0, selectedMonth - 1).toLocaleString("default", {
+              month: "short",
+            })}{" "}
+            Payroll
           </button>
         )}
       </div>
 
       {isAdmin && (
-        <div className="flex p-1 bg-gray-50 rounded-lg w-full sm:w-max border border-gray-100 shadow-sm">
+        <div className="flex-shrink-0 flex p-1 bg-gray-50 rounded-lg w-full sm:w-max border border-gray-100 shadow-sm">
           <button
-            onClick={() => setActiveTab('payslips')}
+            onClick={() => setActiveTab("payslips")}
             className={`flex-1 sm:flex-none px-6 py-2 text-xs font-bold rounded-md transition-all duration-200 ${
-              activeTab === 'payslips' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              activeTab === "payslips"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             Payslip History
           </button>
           <button
-            onClick={() => setActiveTab('salary-management')}
+            onClick={() => setActiveTab("salary-management")}
             className={`flex-1 sm:flex-none px-6 py-2 text-xs font-bold rounded-md transition-all duration-200 ${
-              activeTab === 'salary-management' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+              activeTab === "salary-management"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
             }`}
           >
             Manage Salary Structures
@@ -115,81 +156,70 @@ const PayrollPage = () => {
         </div>
       )}
 
-      {activeTab === 'payslips' && (
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-wrap items-center gap-4">
-            <div className="space-y-1">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Filter Month</p>
-              <select 
-                value={selectedMonth} 
-                onChange={(e) => setSelectedMonth(Number(e.target.value))}
-                className="text-sm border-none bg-gray-50 rounded-lg focus:ring-0 px-3 py-2 font-bold cursor-pointer"
+      {activeTab === "payslips" && (
+        <div className="flex-1 min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+          <PayslipTable
+            payslips={payslips}
+            onView={setSelectedSlip}
+            isLoading={isLoadingSlips}
+          />
+
+          {/* Fixed Pagination at Bottom for Payslips */}
+          <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+              Page {payslipPagination.page} of {payslipPagination.totalPages || 1}
+            </p>
+            <div className="flex gap-2">
+              <button
+                disabled={payslipPagination.page <= 1}
+                onClick={() => handlePayslipPageChange(payslipPagination.page - 1)}
+                className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
               >
-                {Array.from({ length: 12 }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {new Date(0, i).toLocaleString('default', { month: 'long' })}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="space-y-1">
-              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">Filter Year</p>
-              <select 
-                value={selectedYear} 
-                onChange={(e) => setSelectedYear(Number(e.target.value))}
-                className="text-sm border-none bg-gray-50 rounded-lg focus:ring-0 px-3 py-2 font-bold cursor-pointer"
+                Previous
+              </button>
+              <button
+                disabled={payslipPagination.page >= payslipPagination.totalPages}
+                onClick={() => handlePayslipPageChange(payslipPagination.page + 1)}
+                className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
               >
-                {[2024, 2025, 2026].map(y => (
-                  <option key={y} value={y}>{y}</option>
-                ))}
-              </select>
+                Next
+              </button>
             </div>
           </div>
-          <PayslipTable payslips={payslips} onView={setSelectedSlip} isLoading={isLoadingSlips} />
         </div>
       )}
 
-      {activeTab === 'salary-management' && (
-        <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-          {isLoadingEmployees ? (
-            <div className="w-full h-64 flex items-center justify-center">
-              <div className="w-8 h-8 border-4 border-gray-200 border-t-gray-900 rounded-full animate-spin"></div>
+      {activeTab === "salary-management" && (
+        <div className="flex-1 min-h-0 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col">
+          <SalaryStructureTable 
+            employees={employees} 
+            onEdit={setEditingSalaryEmployee} 
+            isLoading={isLoadingEmployees} 
+          />
+
+          {/* Fixed Pagination at Bottom for Salary Management */}
+          {!isLoadingEmployees && (
+            <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50 mt-auto">
+              <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                Page {employeePagination.page} of {employeePagination.totalPages || 1}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  disabled={employeePagination.page <= 1}
+                  onClick={() => handleEmployeePageChange(employeePagination.page - 1)}
+                  className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+                >
+                  Previous
+                </button>
+                <button
+                  disabled={employeePagination.page >= employeePagination.totalPages}
+                  onClick={() => handleEmployeePageChange(employeePagination.page + 1)}
+                  className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+                >
+                  Next
+                </button>
+              </div>
             </div>
-          ) : (
-            <table className="w-full text-left border-collapse">
-              <thead className="bg-gray-50/50 border-b border-gray-100">
-                <tr>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Employee</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Base Pay</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Allowances</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest">Deductions</th>
-                  <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-widest text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                {employees.map((emp) => (
-                  <tr key={emp._id} className="hover:bg-gray-50/50 transition-all duration-200">
-                    <td className="px-6 py-4">
-                      <p className="text-sm font-bold text-gray-900">{emp.fullName}</p>
-                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{emp.employeeId}</p>
-                    </td>
-                    <td className="px-6 py-4 text-sm font-mono text-gray-600">${Number(emp.salary).toLocaleString()}</td>
-                    <td className="px-6 py-4 text-sm font-mono text-green-600">+${Number(emp.allowances || 0).toLocaleString()}</td>
-                    <td className="px-6 py-4 text-sm font-mono text-red-600">-${Number(emp.deductions || 0).toLocaleString()}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button 
-                        onClick={() => setEditingSalaryEmployee(emp)}
-                        className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all"
-                      >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           )}
         </div>
       )}

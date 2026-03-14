@@ -1,3 +1,5 @@
+import { UserPlus } from "lucide-react";
+
 const LeadTable = ({ leads, onStatusUpdate, onEdit, isLoading }) => {
   if (isLoading) {
     return (
@@ -9,61 +11,84 @@ const LeadTable = ({ leads, onStatusUpdate, onEdit, isLoading }) => {
 
   if (!leads?.length) {
     return (
-      <div className="w-full h-64 flex flex-col items-center justify-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-200">
-        <svg className="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-        </svg>
-        <p className="font-medium">No leads found</p>
+      <div className="w-full h-64 flex flex-col items-center justify-center text-gray-500 bg-white rounded-xl border border-dashed">
+        <UserPlus size={40} className="text-gray-300 mb-3" />
+        <p className="text-sm font-medium">No leads found</p>
       </div>
     );
   }
 
   const getStatusStyle = (status) => {
     switch (status) {
-      case 'NEW': return 'bg-blue-50 text-blue-700 border-blue-100';
-      case 'CONTACTED': return 'bg-yellow-50 text-yellow-700 border-yellow-100';
-      case 'NEGOTIATION': return 'bg-purple-50 text-purple-700 border-purple-100';
-      case 'CLOSED': return 'bg-green-50 text-green-700 border-green-100';
-      case 'LOST': return 'bg-red-50 text-red-700 border-red-100';
-      default: return 'bg-gray-50 text-gray-700 border-gray-100';
+      case "NEW":
+        return "bg-blue-100 text-blue-700";
+      case "CONTACTED":
+        return "bg-yellow-100 text-yellow-700";
+      case "NEGOTIATION":
+        return "bg-purple-100 text-purple-700";
+      case "CLOSED":
+        return "bg-green-100 text-green-700";
+      case "LOST":
+        return "bg-red-100 text-red-700";
+      default:
+        return "bg-gray-100 text-gray-700";
     }
   };
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-gray-50/50 border-b border-gray-100">
-          <tr>
-            <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Lead Details</th>
-            <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Contact</th>
-            <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Source</th>
-            <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">Status</th>
-            <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-right">Actions</th>
+    <div className="flex-1 overflow-auto bg-white rounded-t-xl border shadow-sm">
+      <table className="w-full text-left relative border-separate border-spacing-0">
+        <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+          <tr className="text-sm text-gray-600">
+            <th className="px-6 py-3 font-medium bg-gray-50">Lead Name</th>
+            <th className="px-6 py-3 font-medium bg-gray-50">Email</th>
+            <th className="px-6 py-3 font-medium bg-gray-50">Phone</th>
+            <th className="px-6 py-3 font-medium bg-gray-50">Status</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-50">
+
+        <tbody className="divide-y">
           {leads.map((lead) => (
-            <tr key={lead._id} className="hover:bg-gray-50/50 transition-colors group">
+            <tr key={lead._id} className="hover:bg-gray-50 transition">
               <td className="px-6 py-4">
-                <p className="text-sm font-bold text-gray-900">{lead.customerName}</p>
-                <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mt-0.5">{lead.companyName}</p>
+                <p className="text-sm font-medium text-gray-900">
+                  {lead.customerName}
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {lead.companyName}
+                </p>
               </td>
               <td className="px-6 py-4">
                 <div className="flex flex-col gap-1">
-                  {lead.email && <a href={`mailto:${lead.email}`} className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition">{lead.email}</a>}
-                  <a href={`tel:${lead.phone}`} className="text-xs font-medium text-gray-600 hover:text-gray-900 transition">{lead.phone}</a>
+                  {lead.email && (
+                    <a
+                      href={`mailto:${lead.email}`}
+                      className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition"
+                    >
+                      {lead.email}
+                    </a>
+                  )}
+                  <a
+                    href={`tel:${lead.phone}`}
+                    className="text-xs font-medium text-gray-600 hover:text-gray-900 transition"
+                  >
+                    {lead.phone}
+                  </a>
                 </div>
               </td>
               <td className="px-6 py-4">
-                <span className="text-[10px] font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded-md uppercase tracking-wider">
-                  {lead.leadSource || 'N/A'}
+                <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-md">
+                  {lead.leadSource || "N/A"}
                 </span>
               </td>
               <td className="px-6 py-4">
                 <select
                   value={lead.status}
                   onChange={(e) => onStatusUpdate(lead._id, e.target.value)}
-                  className={`text-[10px] font-bold border rounded-full px-2.5 py-1 outline-none focus:ring-2 focus:ring-gray-900 focus:ring-offset-1 ${getStatusStyle(lead.status)} cursor-pointer transition-shadow appearance-none`}
+                  className={`text-xs font-medium border rounded-md px-2 py-1 outline-none focus:ring-2 focus:ring-gray-900 ${getStatusStyle(
+                    lead.status
+                  )} cursor-pointer transition-shadow appearance-none`}
                 >
                   <option value="NEW">New</option>
                   <option value="CONTACTED">Contacted</option>
@@ -78,8 +103,18 @@ const LeadTable = ({ leads, onStatusUpdate, onEdit, isLoading }) => {
                   className="text-gray-400 hover:text-gray-900 transition p-1.5 hover:bg-gray-100 rounded-lg inline-flex"
                   title="Edit Lead"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
                   </svg>
                 </button>
               </td>

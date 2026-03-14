@@ -7,13 +7,17 @@ import InvoiceForm from '../../components/invoices/InvoiceForm';
 const InvoicesPage = () => {
   const queryClient = useQueryClient();
   const [activeFilter, setActiveFilter] = useState('All'); // All, PENDING, PARTIALLY_PAID, PAID
+  const [params, setParams] = useState({ page: 1, limit: 8 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingInvoice, setViewingInvoice] = useState(null);
 
-  // Fetch Invoices (fetching all for client side filtering logic)
+  // Fetch Invoices
   const { data: invoicesData, isLoading } = useQuery({
-    queryKey: ['invoices'],
-    queryFn: () => invoicesApi.getAll({ limit: 1000 }),
+    queryKey: ['invoices', params, activeFilter],
+    queryFn: () => invoicesApi.getAll({ 
+      ...params, 
+      paymentStatus: activeFilter === 'All' ? undefined : activeFilter 
+    }),
   });
 
   // Create Invoice Mutation
@@ -43,93 +47,160 @@ const InvoicesPage = () => {
   });
 
 
-  const rawInvoices = invoicesData?.data?.data;
-  const invoices = Array.isArray(rawInvoices) ? rawInvoices : (rawInvoices?.invoices || []);
-
-  const stats = {
-    total: invoices.length,
-    pendingValue: invoices.filter(i => i.paymentStatus === 'PENDING').reduce((sum, i) => sum + (i.total || 0), 0),
-    paidValue: invoices.filter(i => i.paymentStatus === 'PAID').reduce((sum, i) => sum + (i.total || 0), 0),
-    pending: invoices.filter(i => i.paymentStatus === 'PENDING').length,
-    partiallyPaid: invoices.filter(i => i.paymentStatus === 'PARTIALLY_PAID').length,
-    paid: invoices.filter(i => i.paymentStatus === 'PAID').length,
+  const handlePageChange = (newPage) => {
+    setParams((prev) => ({ ...prev, page: newPage }));
   };
 
-  const filteredInvoices = activeFilter === 'All' 
-    ? invoices 
-    : invoices.filter(i => i.paymentStatus === activeFilter);
+  const rawInvoices = invoicesData?.data?.data;
+  const invoices = rawInvoices?.invoices || [];
+  const pagination = rawInvoices?.pagination || { totalPages: 1, page: 1 };
+
+  const stats = {
+    total: rawInvoices?.totalInvoices || invoices.length,
+    pendingValue: rawInvoices?.summary?.pendingAmount || invoices.filter(i => i.paymentStatus === 'PENDING').reduce((sum, i) => sum + (i.total || 0), 0),
+    paidValue: rawInvoices?.summary?.paidAmount || invoices.filter(i => i.paymentStatus === 'PAID').reduce((sum, i) => sum + (i.total || 0), 0),
+    pending: rawInvoices?.summary?.pendingCount || invoices.filter(i => i.paymentStatus === 'PENDING').length,
+    partiallyPaid: rawInvoices?.summary?.partiallyPaidCount || invoices.filter(i => i.paymentStatus === 'PARTIALLY_PAID').length,
+    paid: rawInvoices?.summary?.paidCount || invoices.filter(i => i.paymentStatus === 'PAID').length,
+  };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="flex flex-col h-full gap-6">
+      <div className="flex-shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight">Invoices</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage billing, track payments, and generate invoices</p>
+          <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+            Invoices
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Manage billing, track payments, and generate invoices
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-md shadow-blue-200 w-max"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           Create Invoice
         </button>
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="flex-shrink-0 grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between border-l-4 border-l-gray-300">
-           <div>
-              <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Total Invoices</p>
-              <p className="text-3xl font-black mt-1 text-gray-800">{stats.total}</p>
-           </div>
+          <div>
+            <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">
+              Total Invoices
+            </p>
+            <p className="text-3xl font-black mt-1 text-gray-800">
+              {stats.total}
+            </p>
+          </div>
         </div>
         <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between border-l-4 border-l-yellow-400">
-           <div>
-              <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Pending Amount</p>
-              <p className="text-3xl font-black mt-1 text-yellow-600">${stats.pendingValue.toFixed(2)}</p>
-           </div>
+          <div>
+            <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">
+              Pending Amount
+            </p>
+            <p className="text-3xl font-black mt-1 text-yellow-600">
+              ${stats.pendingValue.toFixed(2)}
+            </p>
+          </div>
         </div>
         <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between border-l-4 border-l-green-400">
-           <div>
-              <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Paid Amount</p>
-              <p className="text-3xl font-black mt-1 text-green-600">${stats.paidValue.toFixed(2)}</p>
-           </div>
+          <div>
+            <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest">
+              Paid Amount
+            </p>
+            <p className="text-3xl font-black mt-1 text-green-600">
+              ${stats.paidValue.toFixed(2)}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex p-1 bg-gray-50 rounded-lg w-full overflow-x-auto border border-gray-100 shadow-sm no-scrollbar">
+      <div className="flex-shrink-0 flex p-1 bg-gray-50 rounded-lg w-full overflow-x-auto border border-gray-100 shadow-sm no-scrollbar">
         {[
-          { label: 'All', value: 'All' },
-          { label: 'Pending', value: 'PENDING', count: stats.pending },
-          { label: 'Partially Paid', value: 'PARTIALLY_PAID', count: stats.partiallyPaid },
-          { label: 'Paid', value: 'PAID', count: stats.paid },
+          { label: "All", value: "All" },
+          { label: "Pending", value: "PENDING", count: stats.pending },
+          {
+            label: "Partially Paid",
+            value: "PARTIALLY_PAID",
+            count: stats.partiallyPaid,
+          },
+          { label: "Paid", value: "PAID", count: stats.paid },
         ].map((filter) => (
           <button
             key={filter.value}
             onClick={() => setActiveFilter(filter.value)}
             className={`px-4 sm:px-6 py-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest rounded-md transition-all duration-200 whitespace-nowrap ${
-              activeFilter === filter.value ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100/50'
+              activeFilter === filter.value
+                ? "bg-white text-gray-900 shadow-sm ring-1 ring-gray-200"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-100/50"
             }`}
           >
             {filter.label}
-            {filter.value !== 'All' && (
-               <span className={`px-1.5 py-0.5 rounded-full text-[9px] ${activeFilter === filter.value ? 'bg-gray-100 text-gray-600' : 'bg-gray-200 text-gray-400'}`}>
-                 {filter.count}
-               </span>
+            {filter.value !== "All" && (
+              <span
+                className={`px-1.5 py-0.5 rounded-full text-[9px] ${
+                  activeFilter === filter.value
+                    ? "bg-gray-100 text-gray-600"
+                    : "bg-gray-200 text-gray-400"
+                }`}
+              >
+                {filter.count}
+              </span>
             )}
           </button>
         ))}
       </div>
 
-      <InvoiceTable 
-        invoices={filteredInvoices} 
-        isLoading={isLoading} 
-        onView={(invoice) => setViewingInvoice(invoice)}
-        onStatusUpdate={(id, paymentStatus) => updateStatusMutation.mutate({ id, paymentStatus })}
-      />
+      {/* Main Container for Table and Pagination */}
+      <div className="flex-1 min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+        <InvoiceTable
+          invoices={invoices}
+          isLoading={isLoading}
+          onView={(invoice) => setViewingInvoice(invoice)}
+          onStatusUpdate={(id, paymentStatus) =>
+            updateStatusMutation.mutate({ id, paymentStatus })
+          }
+        />
+
+        {/* Fixed Pagination at Bottom */}
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            Page {pagination.page} of {pagination.totalPages || 1}
+          </p>
+          <div className="flex gap-2">
+            <button
+              disabled={pagination.page <= 1}
+              onClick={() => handlePageChange(pagination.page - 1)}
+              className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              Previous
+            </button>
+            <button
+              disabled={pagination.page >= pagination.totalPages}
+              onClick={() => handlePageChange(pagination.page + 1)}
+              className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
 
       {isModalOpen && (
         <InvoiceForm

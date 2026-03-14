@@ -16,12 +16,14 @@ const TasksPage = () => {
     user?.role === "SUPER_ADMIN" || user?.role === "COMPANY_ADMIN";
 
   const [activeFilter, setActiveFilter] = useState("All");
+  const [params, setParams] = useState({ page: 1, limit: 8 });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: tasksData, isLoading } = useQuery({
-    queryKey: ["tasks", user?._id, activeFilter],
+    queryKey: ["tasks", user?._id, activeFilter, params],
     queryFn: () =>
       tasksApi.getAll({
+        ...params,
         status: activeFilter === "All" ? undefined : activeFilter,
       }),
     enabled: !!user?._id,
@@ -44,10 +46,13 @@ const TasksPage = () => {
     },
   });
 
+  const handlePageChange = (newPage) => {
+    setParams((prev) => ({ ...prev, page: newPage }));
+  };
+
   const tasksResult = tasksData?.data?.data;
-  const tasks = Array.isArray(tasksResult)
-    ? tasksResult
-    : tasksResult?.tasks || [];
+  const tasks = tasksResult?.tasks || [];
+  const pagination = tasksResult?.pagination || { totalPages: 1, page: 1 };
 
   const stats = {
     total: tasks.length,
@@ -88,7 +93,7 @@ const TasksPage = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
       {/* Header */}
       <div className="flex flex-row sm:items-center justify-between gap-4 mb-4">
@@ -173,15 +178,40 @@ const TasksPage = () => {
         ))}
       </div>
 
-      {/* Table */}
-      <TaskTable
-        tasks={tasks}
-        isAdmin={isAdmin}
-        isLoading={isLoading}
-        onStatusUpdate={(id, status) =>
-          updateStatusMutation.mutate({ id, status })
-        }
-      />
+      {/* Main Container for Table and Pagination */}
+      <div className="flex-1 min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+        <TaskTable
+          tasks={tasks}
+          onStatusUpdate={(id, status) =>
+            updateStatusMutation.mutate({ id, status })
+          }
+          isAdmin={isAdmin}
+          isLoading={isLoading}
+        />
+
+        {/* Fixed Pagination at Bottom */}
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            Page {pagination.page} of {pagination.totalPages || 1}
+          </p>
+          <div className="flex gap-2">
+            <button
+              disabled={pagination.page <= 1}
+              onClick={() => handlePageChange(pagination.page - 1)}
+              className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              Previous
+            </button>
+            <button
+              disabled={pagination.page >= pagination.totalPages}
+              onClick={() => handlePageChange(pagination.page + 1)}
+              className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Modal */}
       {isModalOpen && (

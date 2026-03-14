@@ -48,19 +48,19 @@ const TaskTable = ({ tasks, onStatusUpdate, isAdmin, isLoading }) => {
   };
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl border shadow-sm">
-      <table className="w-full text-left">
-        <thead className="border-b bg-gray-50">
+    <div className="flex-1 overflow-auto">
+      <table className="w-full text-left relative border-separate border-spacing-0">
+        <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
           <tr className="text-sm text-gray-600">
-            <th className="px-6 py-3 font-medium">Task</th>
-            <th className="px-6 py-3 font-medium">
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Task</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">
               Assigned {isAdmin ? "To" : "By"}
             </th>
-            <th className="px-6 py-3 font-medium">Deadline</th>
-            <th className="px-6 py-3 font-medium">Priority</th>
-            <th className="px-6 py-3 font-medium">Status</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Deadline</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Priority</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Status</th>
             {!isAdmin && (
-              <th className="px-6 py-3 font-medium text-right">Actions</th>
+              <th className="px-6 py-3 font-medium bg-gray-50 text-right text-gray-600">Actions</th>
             )}
           </tr>
         </thead>

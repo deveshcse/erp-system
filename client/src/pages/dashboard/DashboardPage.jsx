@@ -7,6 +7,16 @@ import { companiesApi } from '../../api/companies.api';
 import { attendanceApi } from '../../api/attendance.api';
 import { formatDate } from '../../utils/formatters';
 
+// Helper for Stats Cards
+const StatCard = ({ title, value, colorClass = "text-gray-900" }) => (
+  <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+    <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">
+      {title}
+    </h4>
+    <p className={`text-4xl font-black ${colorClass}`}>{value}</p>
+  </div>
+);
+
 const Dashboard = () => {
   const { user } = useAuth();
   const role = user?.role;
@@ -49,14 +59,6 @@ const Dashboard = () => {
     queryFn: () => attendanceApi.getAll({ limit: 5 }),
     enabled: role === 'EMPLOYEE',
   });
-
-  // Helper for Stats Cards
-  const StatCard = ({ title, value, colorClass = "text-gray-900" }) => (
-    <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
-      <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{title}</h4>
-      <p className={`text-4xl font-black ${colorClass}`}>{value}</p>
-    </div>
-  );
 
   // --- Render Super Admin Dashboard ---
   if (role === 'SUPER_ADMIN') {

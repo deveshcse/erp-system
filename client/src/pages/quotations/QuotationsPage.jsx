@@ -6,13 +6,14 @@ import CreateQuotationForm from '../../components/quotations/CreateQuotationForm
 
 const QuotationPage = () => {
   const queryClient = useQueryClient();
+  const [params, setParams] = useState({ page: 1, limit: 8 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingQuotation, setViewingQuotation] = useState(null);
 
   // Fetch Quotations (No pagination in UI currently, fetch all for client side rendering)
   const { data: quotationsData, isLoading } = useQuery({
-    queryKey: ['quotations'],
-    queryFn: () => quotationsApi.getAll({ limit: 1000 }), // Get all for simplified table rendering
+    queryKey: ['quotations', params],
+    queryFn: () => quotationsApi.getAll(params),
   });
 
   // Create Quotation Mutation
@@ -27,51 +28,110 @@ const QuotationPage = () => {
     }
   });
 
+  const handlePageChange = (newPage) => {
+    setParams((prev) => ({ ...prev, page: newPage }));
+  };
+
   const rawQuotations = quotationsData?.data?.data;
-  const quotations = Array.isArray(rawQuotations) ? rawQuotations : (rawQuotations?.quotations || []);
+  const quotations = rawQuotations?.quotations || [];
+  const pagination = rawQuotations?.pagination || { totalPages: 1, page: 1 };
 
   const stats = {
-    total: quotations.length,
-    totalValue: quotations.reduce((sum, q) => sum + (q.totalAmount || 0), 0)
+    total: rawQuotations?.totalQuotations || quotations.length,
+    totalValue: rawQuotations?.totalAmount || quotations.reduce((sum, q) => sum + (q.totalAmount || 0), 0)
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="flex flex-col h-full gap-6">
+      <div className="flex-shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 leading-tight">Quotations</h1>
-          <p className="text-sm text-gray-500 mt-1">Generate and manage service quotes for customers</p>
+          <h1 className="text-2xl font-bold text-gray-900 leading-tight">
+            Quotations
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Generate and manage service quotes for customers
+          </p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
           className="inline-flex items-center gap-2 px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition shadow-sm w-max"
         >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           Create Quotation
         </button>
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="flex-shrink-0 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {[
-          { label: 'Total Quotations Generated', value: stats.total, color: 'gray' },
-          { label: 'Total Quoted Value', value: `$${stats.totalValue.toFixed(2)}`, color: 'green' },
+          {
+            label: "Total Quotations Generated",
+            value: stats.total,
+            color: "gray",
+          },
+          {
+            label: "Total Quoted Value",
+            value: `$${stats.totalValue.toFixed(2)}`,
+            color: "green",
+          },
         ].map((stat) => (
-          <div key={stat.label} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
-            <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest w-1/2">{stat.label}</p>
-            <p className={`text-3xl font-black mt-1 text-${stat.color}-600`}>{stat.value}</p>
+          <div
+            key={stat.label}
+            className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between"
+          >
+            <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest w-1/2">
+              {stat.label}
+            </p>
+            <p className={`text-3xl font-black mt-1 text-${stat.color}-600`}>
+              {stat.value}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Quotation Table */}
-      <QuotationTable 
-        quotations={quotations} 
-        isLoading={isLoading} 
-        onView={(quotation) => setViewingQuotation(quotation)}
-      />
+      {/* Main Container for Table and Pagination */}
+      <div className="flex-1 min-h-0 bg-white rounded-xl border shadow-sm overflow-hidden flex flex-col">
+        <QuotationTable
+          quotations={quotations}
+          isLoading={isLoading}
+          onView={(quotation) => setViewingQuotation(quotation)}
+        />
+
+        {/* Fixed Pagination at Bottom */}
+        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+            Page {pagination.page} of {pagination.totalPages || 1}
+          </p>
+          <div className="flex gap-2">
+            <button
+              disabled={pagination.page <= 1}
+              onClick={() => handlePageChange(pagination.page - 1)}
+              className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              Previous
+            </button>
+            <button
+              disabled={pagination.page >= pagination.totalPages}
+              onClick={() => handlePageChange(pagination.page + 1)}
+              className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      </div>
 
       {isModalOpen && (
         <CreateQuotationForm

@@ -65,7 +65,7 @@ const Sidebar = ({ onMobileClose }) => {
       </div>
 
       {/* Menu */}
-      <nav className="flex-1 overflow-y-auto px-4 py-6">
+      <nav className="flex-1 overflow-y-auto p-2">
         <div className="space-y-2 p-4 flex flex-col gap-2">
           {menuItems.map((item) => {
             const Icon = item.icon;
@@ -77,12 +77,12 @@ const Sidebar = ({ onMobileClose }) => {
                 to={item.path}
                 onClick={onMobileClose}
                 className={`
-                flex items-center gap-3 h-11 p-4 rounded-md text-sm font-medium
+                flex items-center gap-3 h-11 px-4 py-2 rounded-md text-sm font-medium
                 transition-colors
                 ${
                   isActive
                     ? "bg-indigo-600 text-white"
-                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    : "text-gray-600 hover:bg-gray-200 hover:text-gray-900"
                 }
               `}
               >

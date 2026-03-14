@@ -1,4 +1,5 @@
-import { formatCurrency } from '../../utils/formatters';
+import { formatCurrency } from "../../utils/formatters";
+import { Wallet } from "lucide-react";
 
 const PayslipTable = ({ payslips, onView, isLoading }) => {
   if (isLoading) {
@@ -11,74 +12,96 @@ const PayslipTable = ({ payslips, onView, isLoading }) => {
 
   if (!payslips?.length) {
     return (
-      <div className="w-full h-64 flex flex-col items-center justify-center text-gray-500 bg-white rounded-xl border border-dashed border-gray-200">
-        <svg className="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-        </svg>
-        <p>No payslips found</p>
+      <div className="w-full h-64 flex flex-col items-center justify-center text-gray-500 bg-white rounded-xl border border-dashed">
+        <Wallet size={40} className="text-gray-300 mb-3" />
+        <p className="text-sm font-medium">No payslips found</p>
       </div>
     );
   }
 
   return (
-    <div className="overflow-x-auto bg-white rounded-xl border border-gray-100 shadow-sm">
-      <table className="w-full text-left border-collapse">
-        <thead className="bg-gray-50/50 border-b border-gray-100">
-          <tr>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Month/Year</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Employee</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Basic</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Allow.</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Deduct.</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Days (W/L)</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Net Salary</th>
-            <th className="px-6 py-4 text-xs font-semibold text-gray-500 uppercase tracking-wider text-right">Actions</th>
+    <div className="flex-1 overflow-auto">
+      <table className="w-full text-left relative border-separate border-spacing-0">
+        <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
+          <tr className="text-sm text-gray-600">
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Month/Year</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Employee</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Structure</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Days (W/L)</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Net Salary</th>
+            <th className="px-6 py-3 font-medium bg-gray-50 text-right text-gray-600">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-50">
+        <tbody className="divide-y">
           {payslips.map((slip) => (
-            <tr key={slip._id} className="hover:bg-gray-50/50 transition-colors">
-              <td className="px-6 py-4 text-sm text-gray-900 font-bold">
-                {slip.month}
-              </td>
+            <tr key={slip._id} className="hover:bg-gray-50 transition">
+              {/* Month/Year */}
               <td className="px-6 py-4">
-                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-bold">
-                    {slip.employeeId?.fullName?.[0]}
+                <p className="text-sm font-medium text-gray-900">
+                  {slip.month}
+                </p>
+                <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
+                  Statement
+                </p>
+              </td>
+
+              {/* Employee */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gray-900 text-white text-[10px] flex items-center justify-center font-black">
+                    {slip.employeeId?.fullName?.[0] || "E"}
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900">{slip.employeeId?.fullName}</p>
-                    <p className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">{slip.employeeId?.employeeId}</p>
+                    <p className="text-sm font-medium text-gray-700">
+                      {slip.employeeId?.fullName}
+                    </p>
+                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">
+                      {slip.employeeId?.employeeId}
+                    </p>
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4 text-sm font-medium text-gray-600">
-                {formatCurrency(slip.basicSalary)}
+
+              {/* Structure */}
+              <td className="px-6 py-4">
+                <div className="flex flex-col gap-1">
+                  <p className="text-xs text-gray-600 font-medium">
+                    <span className="text-[10px] text-gray-400 font-black uppercase mr-1">Base</span> {formatCurrency(slip.basicSalary)}
+                  </p>
+                  <div className="flex gap-2">
+                    <span className="text-[10px] text-green-600 font-black">+{formatCurrency(slip.allowances)}</span>
+                    <span className="text-[10px] text-red-600 font-black">-{formatCurrency(slip.deductions)}</span>
+                  </div>
+                </div>
               </td>
-              <td className="px-6 py-4 text-sm font-medium text-green-600">
-                +{formatCurrency(slip.allowances)}
+
+              {/* Attendance */}
+              <td className="px-6 py-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="inline-flex items-center justify-center w-6 h-6 bg-blue-50 text-blue-700 rounded text-[10px] font-black">
+                    {slip.workingDays}
+                  </span>
+                  <span className="text-gray-300 font-light text-xs">/</span>
+                  <span className="inline-flex items-center justify-center w-6 h-6 bg-red-50 text-red-700 rounded text-[10px] font-black">
+                    {slip.leaveDays}
+                  </span>
+                </div>
               </td>
-              <td className="px-6 py-4 text-sm font-medium text-red-600">
-                -{formatCurrency(slip.deductions)}
+
+              {/* Net Salary */}
+              <td className="px-6 py-4">
+                <p className="text-sm font-black text-gray-900 tracking-tight">
+                  {formatCurrency(slip.netSalary)}
+                </p>
               </td>
-              <td className="px-6 py-4 text-sm font-medium text-gray-600">
-                <span className="text-gray-900 font-bold">{slip.workingDays}</span>
-                <span className="text-gray-400 mx-1">/</span>
-                <span className="text-gray-500">{slip.leaveDays}</span>
-              </td>
-              <td className="px-6 py-4 text-sm font-bold text-gray-900">
-                {formatCurrency(slip.netSalary)}
-              </td>
+
+              {/* Actions */}
               <td className="px-6 py-4 text-right">
                 <button
                   onClick={() => onView(slip)}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-bold bg-gray-50 hover:bg-gray-900 hover:text-white rounded-lg transition-all duration-200"
+                  className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all active:scale-95 shadow-sm"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  View Details
+                  View Detail
                 </button>
               </td>
             </tr>
