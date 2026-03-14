@@ -12,7 +12,7 @@ const taskSchema = new Schema(
     },
     assignedTo: {
       type: Schema.Types.ObjectId,
-      ref: "User", // Can be assigned to an employee/user
+      ref: "Employee", // Can be assigned to an employee/user
       required: true,
     },
     assignedBy: {
@@ -30,8 +30,8 @@ const taskSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["TODO", "IN_PROGRESS", "COMPLETED", "CANCELLED"],
-      default: "TODO",
+      enum: ["PENDING", "IN_PROGRESS", "COMPLETED"],
+      default: "PENDING",
     },
     companyId: {
       type: Schema.Types.ObjectId,

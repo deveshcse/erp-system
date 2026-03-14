@@ -5,7 +5,7 @@ export const createTaskValidator = [
   body("description").notEmpty().withMessage("Description is required").trim(),
   body("assignedTo").isMongoId().withMessage("Invalid assignee ID"),
   body("deadline").isISO8601().toDate().withMessage("Invalid deadline format"),
-  body("priority").optional().isIn(["LOW", "MEDIUM", "HIGH", "URGENT"]).withMessage("Invalid priority"),
+  body("priority").optional().isIn(["LOW", "MEDIUM", "HIGH"]).withMessage("Invalid priority"),
 ];
 
 export const updateTaskStatusValidator = [
