@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { invoicesApi } from '../../api/invoices.api';
 import InvoiceTable from '../../components/invoices/InvoiceTable';
 import InvoiceForm from '../../components/invoices/InvoiceForm';
@@ -26,23 +27,21 @@ const InvoicesPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['invoices']);
       setIsModalOpen(false);
+      toast.success('Invoice created successfully');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to create invoice');
+      toast.error(err.response?.data?.message || 'Failed to create invoice');
     }
   });
 
-  // No specific endpoint to only update status usually in boilerplate, assuming we can update full body or just paymentStatus if generic update endpoint exists,
-  // Since user provided limited API spec (POST / GET / GET id), but asked for generic feature, I'm assuming a generic update exists similarly to Leads. But since update endpoint isn't exposed in our api client right now, we will add it to `apiClient` theoretically or mock it if strictly adhering to constraints. Wait, we may not have an update route in `invoices.api.js` explicitly required in the task, but user requests "update payment status". Let's assume `apiClient.put(/invoices/${id})` exists based on standard CRUD.
-  // Wait, looking at invoices.api.js, there is NO put/update route. Let me assume a standard put endpoint or just implement the frontend assuming the backend allows it. I will mock the update API for now.
-  const tempMockUpdate = async (id, status) => { return invoicesApi.create({}); } // mock
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, paymentStatus }) => invoicesApi.update ? invoicesApi.update(id, { paymentStatus }) : Promise.resolve(), // Fallback if API lacks route
+    mutationFn: ({ id, paymentStatus }) => invoicesApi.updateStatus(id, { paymentStatus }),
     onSuccess: () => {
       queryClient.invalidateQueries(['invoices']);
+      toast.success('Invoice status updated');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to update status');
+      toast.error(err.response?.data?.message || 'Failed to update status');
     }
   });
 
@@ -114,7 +113,7 @@ const InvoicesPage = () => {
               Pending Amount
             </p>
             <p className="text-3xl font-black mt-1 text-yellow-600">
-              ${stats.pendingValue.toFixed(2)}
+              ₹{stats.pendingValue.toFixed(2)}
             </p>
           </div>
         </div>
@@ -124,7 +123,7 @@ const InvoicesPage = () => {
               Paid Amount
             </p>
             <p className="text-3xl font-black mt-1 text-green-600">
-              ${stats.paidValue.toFixed(2)}
+              ₹{stats.paidValue.toFixed(2)}
             </p>
           </div>
         </div>
@@ -256,8 +255,8 @@ const InvoicesPage = () => {
                       <tr key={i}>
                         <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.name}</td>
                         <td className="px-4 py-3 text-sm text-gray-600 text-right">{item.quantity}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 text-right">${item.price.toFixed(2)}</td>
-                        <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">${(item.quantity * item.price).toFixed(2)}</td>
+                        <td className="px-4 py-3 text-sm text-gray-600 text-right">₹{item.price.toFixed(2)}</td>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">₹{(item.quantity * item.price).toFixed(2)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -273,7 +272,7 @@ const InvoicesPage = () => {
                    </div>
                    <div className="flex justify-between text-lg font-black text-gray-900 border-t pt-2">
                      <span>Total</span>
-                     <span>${viewingInvoice.total.toFixed(2)}</span>
+                     <span>₹{viewingInvoice.total.toFixed(2)}</span>
                    </div>
                  </div>
               </div>

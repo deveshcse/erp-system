@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { payrollApi } from '../../api/payroll.api';
 import { employeesApi } from '../../api/employees.api';
 import { useAuth } from '../../context/AuthContext';
@@ -51,7 +52,11 @@ const PayrollPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['employees']);
       setEditingSalaryEmployee(null);
+      toast.success('Salary structure updated');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to update salary structure');
+    }
   });
 
   // Mutate: Process Payroll
@@ -61,7 +66,11 @@ const PayrollPage = () => {
       queryClient.invalidateQueries(['payslips']);
       setIsProcessModalOpen(false);
       setActiveTab('payslips');
+      toast.success('Monthly payroll processed successfully');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to process payroll');
+    }
   });
 
   const handleProcess = () => {

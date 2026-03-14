@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { attendanceApi } from '../../api/attendance.api';
 import { useAuth } from '../../context/AuthContext';
 import AttendanceTable from '../../components/attendance/AttendanceTable';
@@ -43,7 +44,11 @@ const AttendancePage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['attendance']);
       setIsModalOpen(false);
+      toast.success('Attendance marked successfully');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to mark attendance');
+    }
   });
 
   const handleMarkAttendance = (formData) => {

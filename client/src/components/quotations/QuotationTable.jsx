@@ -24,10 +24,9 @@ const QuotationTable = ({ quotations, onView, isLoading }) => {
       <table className="w-full text-left relative border-separate border-spacing-0">
         <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
           <tr className="text-sm text-gray-600">
-            <th className="px-6 py-3 font-medium bg-gray-50">Quotation No.</th>
             <th className="px-6 py-3 font-medium bg-gray-50">Customer</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Total Amount</th>
             <th className="px-6 py-3 font-medium bg-gray-50">Validity</th>
+            <th className="px-6 py-3 font-medium bg-gray-50">Total Amount</th>
             <th className="px-6 py-3 font-medium bg-gray-50 text-right">Actions</th>
           </tr>
         </thead>
@@ -57,7 +56,7 @@ const QuotationTable = ({ quotations, onView, isLoading }) => {
               </td>
               <td className="px-6 py-4">
                 <span className="text-sm font-semibold text-gray-900">
-                  ${quotation.totalAmount.toFixed(2)}
+                  ₹{quotation.totalAmount.toFixed(2)}
                 </span>
                 {quotation.tax > 0 && (
                   <p className="text-xs text-gray-400 mt-0.5">

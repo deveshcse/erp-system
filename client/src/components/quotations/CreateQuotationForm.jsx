@@ -149,7 +149,7 @@ const CreateQuotationForm = ({ onSave, onCancel, isSaving }) => {
                   </div>
                   <div className="w-32">
                     <div className="relative">
-                      <span className="absolute left-3 top-2 text-gray-400 font-bold text-sm">$</span>
+                      <span className="absolute left-3 top-2 text-gray-400 font-bold text-sm">₹</span>
                       <input
                         type="number"
                         required
@@ -192,16 +192,16 @@ const CreateQuotationForm = ({ onSave, onCancel, isSaving }) => {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm text-gray-400 font-bold">
                 <span>Subtotal</span>
-                <span>${totals.subtotal.toFixed(2)}</span>
+                <span>₹{totals.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-gray-400 font-bold">
                 <span>Tax ({formData.tax || 0}%)</span>
-                <span>${totals.taxAmount.toFixed(2)}</span>
+                <span>₹{totals.taxAmount.toFixed(2)}</span>
               </div>
             </div>
             <div className="pt-4 border-t border-gray-800 flex justify-between items-center">
               <span className="text-sm font-bold text-gray-300 uppercase tracking-widest">Total Amount</span>
-              <span className="text-3xl font-black">${totals.totalAmount.toFixed(2)}</span>
+              <span className="text-3xl font-black">₹{totals.totalAmount.toFixed(2)}</span>
             </div>
           </div>
 

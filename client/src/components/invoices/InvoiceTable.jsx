@@ -68,7 +68,7 @@ const InvoiceTable = ({ invoices, onView, onStatusUpdate, isLoading }) => {
               </td>
               <td className="px-6 py-4">
                 <span className="text-sm font-semibold text-gray-900">
-                  ${(invoice.total || 0).toFixed(2)}
+                  ₹{(invoice.total || 0).toFixed(2)}
                 </span>
                 {invoice.tax > 0 && (
                   <p className="text-xs text-gray-400 mt-0.5">

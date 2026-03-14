@@ -169,7 +169,7 @@ const InvoiceForm = ({ onSave, onCancel, isSaving }) => {
                   </div>
                   <div className="w-full sm:w-32">
                     <div className="relative">
-                      <span className="absolute left-3 top-2 text-gray-400 font-bold text-sm">$</span>
+                      <span className="absolute left-3 top-2 text-gray-400 font-bold text-sm">₹</span>
                       <input
                         type="number"
                         required
@@ -216,11 +216,11 @@ const InvoiceForm = ({ onSave, onCancel, isSaving }) => {
             <div className="space-y-3 mb-6 relative z-10">
               <div className="flex justify-between items-center text-sm font-medium text-gray-400">
                 <span>Subtotal</span>
-                <span className="text-gray-200">${totals.subtotal.toFixed(2)}</span>
+                <span className="text-gray-200">₹{totals.subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-center text-sm font-medium text-gray-400">
                 <span>Tax ({formData.tax || 0}%)</span>
-                <span className="text-gray-200">${totals.taxAmount.toFixed(2)}</span>
+                <span className="text-gray-200">₹{totals.taxAmount.toFixed(2)}</span>
               </div>
             </div>
             
@@ -229,7 +229,7 @@ const InvoiceForm = ({ onSave, onCancel, isSaving }) => {
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block mb-1">Total Amount</span>
                 <span className="text-[10px] text-gray-500 font-medium">{formData.paymentStatus.replace('_', ' ')}</span>
               </div>
-              <span className="text-4xl font-black tracking-tight">${totals.totalAmount.toFixed(2)}</span>
+              <span className="text-4xl font-black tracking-tight">₹{totals.totalAmount.toFixed(2)}</span>
             </div>
           </div>
 

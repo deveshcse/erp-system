@@ -49,7 +49,7 @@ const SalaryConfigModal = ({ employee, onSave, onCancel, isSaving }) => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Base Salary (Monthly)</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
                 <input
                   type="number"
                   value={formData.basicSalary}
@@ -65,7 +65,7 @@ const SalaryConfigModal = ({ employee, onSave, onCancel, isSaving }) => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Allowances</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
                 <input
                   type="number"
                   value={formData.allowances}
@@ -80,7 +80,7 @@ const SalaryConfigModal = ({ employee, onSave, onCancel, isSaving }) => {
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Deductions</label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
                 <input
                   type="number"
                   value={formData.deductions}

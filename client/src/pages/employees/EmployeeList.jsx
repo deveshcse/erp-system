@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { employeesApi } from '../../api/employees.api';
+import { toast } from 'react-hot-toast';
 import EmployeeTable from '../../components/employees/EmployeeTable';
 import EmployeeForm from '../../components/employees/EmployeeForm';
 
@@ -23,7 +24,11 @@ const EmployeeList = () => {
     onSuccess: (response) => {
       queryClient.invalidateQueries(['employees']);
       setCreationSuccessData(response.data.data);
+      toast.success('Employee record created');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to add employee');
+    }
   });
 
   // Mutate: Edit Employee
@@ -32,7 +37,11 @@ const EmployeeList = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['employees']);
       closeModal();
+      toast.success('Employee details updated');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to update employee');
+    }
   });
 
   // Mutate: Delete Employee
@@ -40,7 +49,11 @@ const EmployeeList = () => {
     mutationFn: (id) => employeesApi.remove(id),
     onSuccess: () => {
       queryClient.invalidateQueries(['employees']);
+      toast.success('Employee deleted');
     },
+    onError: (err) => {
+      toast.error(err.response?.data?.message || 'Failed to delete employee');
+    }
   });
 
   const handleSearch = (e) => {

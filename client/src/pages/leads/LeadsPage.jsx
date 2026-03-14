@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 import { leadsApi } from '../../api/leads.api';
 import LeadTable from '../../components/leads/LeadTable';
 import LeadForm from '../../components/leads/LeadForm';
@@ -27,9 +28,10 @@ const LeadsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['leads']);
       closeModal();
+      toast.success('Lead created successfully');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to create lead');
+      toast.error(err.response?.data?.message || 'Failed to create lead');
     }
   });
 
@@ -39,9 +41,10 @@ const LeadsPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries(['leads']);
       closeModal();
+      toast.success('Lead updated successfully');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to update lead');
+      toast.error(err.response?.data?.message || 'Failed to update lead');
     }
   });
 
@@ -50,9 +53,10 @@ const LeadsPage = () => {
     mutationFn: ({ id, status }) => leadsApi.update(id, { status }),
     onSuccess: () => {
       queryClient.invalidateQueries(['leads']);
+      toast.success('Lead status updated');
     },
     onError: (err) => {
-      alert(err.response?.data?.message || 'Failed to update status');
+      toast.error(err.response?.data?.message || 'Failed to update status');
     }
   });
 
