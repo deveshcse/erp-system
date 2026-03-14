@@ -59,3 +59,13 @@ export const listLeads = async (filters, companyId) => {
     },
   };
 };
+
+export const deleteLead = async (leadId, companyId) => {
+  const lead = await Lead.findOneAndDelete({ _id: leadId, companyId });
+
+  if (!lead) {
+    throw new ApiError(404, "Lead not found or doesn't belong to your company");
+  }
+
+  return lead;
+};

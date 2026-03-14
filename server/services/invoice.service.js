@@ -64,3 +64,17 @@ export const listInvoices = async (filters, companyId) => {
     },
   };
 };
+
+export const updateInvoiceStatus = async (invoiceId, paymentStatus, companyId) => {
+  const invoice = await Invoice.findOneAndUpdate(
+    { _id: invoiceId, companyId },
+    { $set: { paymentStatus } },
+    { new: true, runValidators: true }
+  );
+
+  if (!invoice) {
+    throw new ApiError(404, "Invoice not found or doesn't belong to your company");
+  }
+
+  return invoice;
+};
