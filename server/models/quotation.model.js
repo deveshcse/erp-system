@@ -25,11 +25,6 @@ const quotationSchema = new Schema(
       type: Date,
       required: true,
     },
-    status: {
-        type: String,
-        enum: ["DRAFT", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"],
-        default: "DRAFT"
-    },
     companyId: {
       type: Schema.Types.ObjectId,
       ref: "Company",

@@ -8,7 +8,6 @@ export const createQuotationValidator = [
   body("items.*.price").isNumeric({ min: 0 }).withMessage("Price must be a positive number"),
   body("tax").optional().isNumeric({ min: 0 }).withMessage("Tax must be a positive number"),
   body("validityDate").isISO8601().toDate().withMessage("Invalid validity date"),
-  body("status").optional().isIn(["DRAFT", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"]),
 ];
 
 export const getQuotationValidator = [
@@ -19,5 +18,4 @@ export const listQuotationsValidator = [
   query("page").optional().isInt({ min: 1 }).toInt(),
   query("limit").optional().isInt({ min: 1, max: 100 }).toInt(),
   query("customerName").optional().trim(),
-  query("status").optional().isIn(["DRAFT", "SENT", "ACCEPTED", "REJECTED", "EXPIRED"]),
 ];
