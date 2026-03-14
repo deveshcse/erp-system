@@ -8,6 +8,7 @@ const CompaniesPage = () => {
   const queryClient = useQueryClient();
   const [params, setParams] = useState({ page: 1, limit: 10, search: '' });
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [creationSuccessData, setCreationSuccessData] = useState(null);
 
   // Fetch Companies
   const { data, isLoading, error } = useQuery({
@@ -18,9 +19,9 @@ const CompaniesPage = () => {
   // Mutate: Add Company
   const addMutation = useMutation({
     mutationFn: (newCompany) => companiesApi.create(newCompany),
-    onSuccess: () => {
+    onSuccess: (response) => {
       queryClient.invalidateQueries(['companies']);
-      closeModal();
+      setCreationSuccessData(response.data.data);
     },
   });
 
@@ -33,10 +34,12 @@ const CompaniesPage = () => {
   };
 
   const openModal = () => {
+    setCreationSuccessData(null);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
+    setCreationSuccessData(null);
     setIsModalOpen(false);
   };
 
@@ -130,7 +133,7 @@ const CompaniesPage = () => {
           <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="px-6 py-4 border-b flex items-center justify-between">
               <h2 className="text-lg font-bold text-gray-900">
-                Add New Company
+                {creationSuccessData ? 'Company Created Successfully' : 'Add New Company'}
               </h2>
               <button onClick={closeModal} className="text-gray-400 hover:text-gray-900 transition">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -138,12 +141,45 @@ const CompaniesPage = () => {
                 </svg>
               </button>
             </div>
-            <div className="p-6 overflow-y-auto max-h-[80vh]">
-              <CompanyForm
-                onSubmit={handleSubmit}
-                onCancel={closeModal}
-                isSubmitting={addMutation.isLoading}
-              />
+            <div className="p-6">
+              {creationSuccessData ? (
+                <div className="space-y-6 py-4">
+                  <div className="flex flex-col items-center justify-center text-center">
+                    <div className="w-16 h-16 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-4">
+                      <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <p className="text-gray-600">Company and Admin user have been created. Please share these credentials with the Company Admin.</p>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-xl p-6 space-y-4 border border-gray-100">
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Admin Email</label>
+                      <p className="text-lg font-bold text-gray-900 mt-1">{creationSuccessData.admin?.email}</p>
+                    </div>
+                    <div>
+                      <label className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Login Role</label>
+                      <p className="text-lg font-bold text-gray-900 mt-1">COMPANY_ADMIN</p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={closeModal}
+                    className="w-full py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-700 transition"
+                  >
+                    Done
+                  </button>
+                </div>
+              ) : (
+                <div className="overflow-y-auto max-h-[80vh]">
+                  <CompanyForm
+                    onSubmit={handleSubmit}
+                    onCancel={closeModal}
+                    isSubmitting={addMutation.isLoading}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
