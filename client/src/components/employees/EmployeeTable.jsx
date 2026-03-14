@@ -21,19 +21,18 @@ const EmployeeTable = ({ employees, onEdit, onDelete, isLoading }) => {
 
   return (
     <div className="flex-1 overflow-auto bg-white rounded-t-xl border shadow-sm">
-      <table className="w-full text-left relative border-separate border-spacing-0">
-        <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
-          <tr className="text-sm text-gray-600">
-            <th className="px-6 py-3 font-medium bg-gray-50">Employee</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Department & Role</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Joined Date</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Salary</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Status</th>
-            <th className="px-6 py-3 font-medium bg-gray-50 text-right">Actions</th>
+      <table className="table-standard">
+        <thead>
+          <tr>
+            <th>Employee</th>
+            <th>Department & Role</th>
+            <th>Joined Date</th>
+            <th>Salary</th>
+            <th>Status</th>
+            <th className="text-right">Actions</th>
           </tr>
         </thead>
-
-        <tbody className="divide-y">
+        <tbody className="">
           {employees.map((emp) => (
             <tr key={emp._id} className="hover:bg-gray-50 transition">
               <td className="px-6 py-4">

@@ -20,19 +20,19 @@ const PayslipTable = ({ payslips, onView, isLoading }) => {
   }
 
   return (
-    <div className="flex-1 overflow-auto">
-      <table className="w-full text-left relative border-separate border-spacing-0">
-        <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
-          <tr className="text-sm text-gray-600">
-            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Month/Year</th>
-            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Employee</th>
-            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Structure</th>
-            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Days (W/L)</th>
-            <th className="px-6 py-3 font-medium bg-gray-50 text-gray-600">Net Salary</th>
-            <th className="px-6 py-3 font-medium bg-gray-50 text-right text-gray-600">Actions</th>
+    <div className="flex-1 overflow-auto bg-white rounded-t-xl border shadow-sm">
+      <table className="table-standard">
+        <thead>
+          <tr>
+            <th>Month/Year</th>
+            <th>Employee</th>
+            <th>Structure</th>
+            <th>Days (W/L)</th>
+            <th>Net Salary</th>
+            <th className="text-right">Actions</th>
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody className="">
           {payslips.map((slip) => (
             <tr key={slip._id} className="hover:bg-gray-50 transition">
               {/* Month/Year */}

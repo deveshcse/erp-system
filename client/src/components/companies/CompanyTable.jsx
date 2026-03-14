@@ -20,20 +20,20 @@ const CompanyTable = ({ companies, isLoading }) => {
   }
 
   return (
-    <div className="flex-1 overflow-auto bg-white rounded-xl border shadow-sm">
-      <table className="w-full text-left relative border-separate border-spacing-0">
-        <thead className="sticky top-0 z-10 bg-gray-50 shadow-[0_1px_0_rgba(0,0,0,0.05)]">
-          <tr className="text-sm text-gray-600">
-            <th className="px-6 py-3 font-medium bg-gray-50">Company</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Contact Person</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Status</th>
-            <th className="px-6 py-3 font-medium bg-gray-50">Joined</th>
+    <div className="flex-1 overflow-auto bg-white rounded-t-xl border shadow-sm">
+      <table className="table-standard">
+        <thead>
+          <tr>
+            <th>Company</th>
+            <th>Contact Person</th>
+            <th>Status</th>
+            <th>Joined</th>
           </tr>
         </thead>
-        <tbody className="divide-y">
+        <tbody>
           {companies.map((company) => (
-            <tr key={company._id} className="hover:bg-gray-50 transition">
-              <td className="px-6 py-4">
+            <tr key={company._id}>
+              <td>
                 <div className="flex items-center gap-3">
                   <div className="w-7 h-7 rounded-full bg-gray-900 text-white text-xs flex items-center justify-center font-bold">
                     {company.companyName?.[0]?.toUpperCase()}
@@ -51,16 +51,16 @@ const CompanyTable = ({ companies, isLoading }) => {
                   </div>
                 </div>
               </td>
-              <td className="px-6 py-4">
+              <td>
                 <p className="text-sm font-medium text-gray-900">
                   {company.companyEmail}
                 </p>
                 <p className="text-xs text-gray-500">{company.contactNumber}</p>
               </td>
-              <td className="px-6 py-4 text-sm text-gray-600">
+              <td className="text-sm text-gray-600">
                 {company.gstNumber || "N/A"}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-600">
+              <td className="text-sm text-gray-600">
                 {formatDate(company.createdAt)}
               </td>
             </tr>
