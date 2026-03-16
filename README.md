@@ -14,8 +14,8 @@ https://erp-system-frontend-snowy.vercel.app/login
 | Role | Email | Password |
 |---|---|---|
 | Super Admin | admin@erp.com | adminpassword123 |
-| Company Admin | company@erp.com | companypassword123 |
-| Employee | employee@erp.com | employeepassword123 |
+| Company Admin | admin1@company1.com | password123
+| Employee | employee1@company1.com | password123 |
 
 
 ## Features
@@ -33,6 +33,22 @@ https://erp-system-frontend-snowy.vercel.app/login
 | **Invoice System** | Create invoices, track payment status |
 
 ---
+
+## Screenshots
+
+<div align="center">
+
+| | |
+|:---:|:---:|
+| **Invoice Management** | **Leads Management** |
+| ![Screenshot 1](./screenshots/Screenshot%20(79).png) | ![Screenshot 2](./screenshots/Screenshot%20(80).png) |
+| **Attandance Management** | **Employee Management** |
+| ![Screenshot 3](./screenshots/Screenshot%20(81).png) | ![Screenshot 4](./screenshots/Screenshot%20(82).png) |
+| **Add Employee** | **Lead Form** |
+| ![Screenshot 5](./screenshots/Screenshot%20(83).png) | ![Screenshot 6](./screenshots/Screenshot%20(84).png) |
+
+
+</div>
 
 ## Tech Stack
 
