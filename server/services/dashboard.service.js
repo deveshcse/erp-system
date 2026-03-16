@@ -83,7 +83,7 @@ export const getEmployeeStats = async (user, companyId) => {
   const cId = new mongoose.Types.ObjectId(companyId);
   
   // Find employee record
-  const employee = await Employee.findOne({ email: user.email, companyId: cId });
+  const employee = await Employee.findOne({ userId: user._id, companyId: cId });
   if (!employee) return null;
 
   // 1. Task Distribution

@@ -4,6 +4,20 @@ A modular Enterprise Resource Planning system built with MongoDB, Express.js, Re
 
 ---
 
+## checkout the platorm live
+
+https://erp-system-frontend-snowy.vercel.app/login
+
+
+## Test Login Credentials
+
+| Role | Email | Password |
+|---|---|---|
+| Super Admin | admin@erp.com | adminpassword123 |
+| Company Admin | company@erp.com | companypassword123 |
+| Employee | employee@erp.com | employeepassword123 |
+
+
 ## Features
 
 | Module | Description |
@@ -44,7 +58,7 @@ A modular Enterprise Resource Planning system built with MongoDB, Express.js, Re
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/<your-username>/erp-system.git
+https://github.com/deveshcse/erp-system.git
 cd erp-system
 ```
 
@@ -78,7 +92,7 @@ npm run dev
 
 ```bash
 cd client
-npm install
+npm install --legacy-peer-deps
 npm run dev
 ```
 
@@ -90,7 +104,7 @@ Use the following script or directly create a Super Admin user via the MongoDB s
 
 ```bash
 cd server
-node scripts/seedSuperAdmin.js
+node scripts/seed.js
 ```
 
 ---

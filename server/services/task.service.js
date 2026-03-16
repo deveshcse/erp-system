@@ -24,8 +24,8 @@ export const updateTaskStatus = async (taskId, status, user, companyId) => {
   // RBAC: Employees can only update tasks assigned to them
   if (user.role === "EMPLOYEE") {
     // Find employee record for this user
-    const empRecord = await Employee.findOne({ email: user.email });
-    if (!empRecord) throw new ApiError(404, "Employee record not found");
+    const empRecord = await Employee.findOne({ userId: user._id });
+    if (!empRecord) throw new ApiError(404, "Employee record not found for your account");
     query.assignedTo = empRecord._id;
   }
 
@@ -50,8 +50,8 @@ export const listTasks = async (filters, user, companyId) => {
 
   // If Employee, only show tasks assigned to them
   if (user.role === "EMPLOYEE") {
-    const empRecord = await Employee.findOne({ email: user.email });
-    if (!empRecord) throw new ApiError(404, "Employee record not found");
+    const empRecord = await Employee.findOne({ userId: user._id });
+    if (!empRecord) throw new ApiError(404, "Employee record not found for your account");
     query.assignedTo = empRecord._id;
   } else if (assignedTo) {
     // Admin can filter by specific assignee

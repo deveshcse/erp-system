@@ -37,8 +37,8 @@ export const getAttendanceHistory = async (filters, companyId, user) => {
   // RBAC isolation: Employee can only see their own attendance
   if (user.role === "EMPLOYEE") {
       // Find the employee record for this user first
-      const empRecord = await Employee.findOne({ email: user.email });
-      if (!empRecord) throw new ApiError(404, "Employee record not found for user");
+      const empRecord = await Employee.findOne({ userId: user._id });
+      if (!empRecord) throw new ApiError(404, "Employee record not found for your account");
       query.employeeId = empRecord._id;
   } else if (employeeId) {
       // Admin can filter by specific employee

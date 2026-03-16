@@ -96,7 +96,7 @@ export const getEmployeePayslips = async (employeeId, filters, user) => {
 
   // RBAC check: Employees can only view their own payslips
   if (user.role === "EMPLOYEE") {
-      const employeeRecord = await Employee.findOne({ email: user.email });
+      const employeeRecord = await Employee.findOne({ userId: user._id });
       if (!employeeRecord || employeeRecord._id.toString() !== employeeId) {
           throw new ApiError(403, "You can only access your own payslips");
       }
@@ -148,7 +148,7 @@ export const getMyPayslips = async (user, filters) => {
   const { month } = filters;
 
   // Resolve the Employee record from the User's email
-  const employeeRecord = await Employee.findOne({ email: user.email });
+  const employeeRecord = await Employee.findOne({ userId: user._id });
   if (!employeeRecord) {
     throw new ApiError(404, "No employee record found for your account");
   }

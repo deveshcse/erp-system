@@ -37,6 +37,6 @@ pnpm-debug.log*
 Thumbs.db
 
 
-scripts/
+scripts/test*
 
 example.routes.js
