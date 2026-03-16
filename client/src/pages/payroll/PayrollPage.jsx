@@ -143,7 +143,10 @@ const PayrollPage = () => {
       {isAdmin && (
         <div className="flex-shrink-0 flex p-1 bg-gray-50 rounded-lg w-full sm:w-max border border-gray-100 shadow-sm">
           <button
-            onClick={() => setActiveTab("payslips")}
+            onClick={() => {
+              setActiveTab("payslips");
+              setPayslipParams((prev) => ({ ...prev, page: 1 }));
+            }}
             className={`flex-1 sm:flex-none px-6 py-2 text-xs font-bold rounded-md transition-all duration-200 ${
               activeTab === "payslips"
                 ? "bg-white text-gray-900 shadow-sm"
@@ -153,7 +156,10 @@ const PayrollPage = () => {
             Payslip History
           </button>
           <button
-            onClick={() => setActiveTab("salary-management")}
+            onClick={() => {
+              setActiveTab("salary-management");
+              setEmployeeParams((prev) => ({ ...prev, page: 1 }));
+            }}
             className={`flex-1 sm:flex-none px-6 py-2 text-xs font-bold rounded-md transition-all duration-200 ${
               activeTab === "salary-management"
                 ? "bg-white text-gray-900 shadow-sm"

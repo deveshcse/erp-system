@@ -171,7 +171,10 @@ const TasksPage = () => {
         ].map((filter) => (
           <button
             key={filter.value}
-            onClick={() => setActiveFilter(filter.value)}
+            onClick={() => {
+              setActiveFilter(filter.value);
+              setParams((prev) => ({ ...prev, page: 1 }));
+            }}
             className={`px-4 py-2 text-sm rounded-md whitespace-nowrap transition
               ${
                 activeFilter === filter.value
@@ -199,7 +202,7 @@ const TasksPage = () => {
         />
 
         {/* Fixed Pagination at Bottom */}
-        <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
+        <div className="shrink-0 flex items-center justify-between px-6 py-4 border-t bg-gray-50/50">
           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
             Page {pagination.page} of {pagination.totalPages || 1}
           </p>

@@ -143,7 +143,10 @@ const InvoicesPage = () => {
         ].map((filter) => (
           <button
             key={filter.value}
-            onClick={() => setActiveFilter(filter.value)}
+            onClick={() => {
+              setActiveFilter(filter.value);
+              setParams((prev) => ({ ...prev, page: 1 }));
+            }}
             className={`px-4 sm:px-6 py-2 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest rounded-md transition-all duration-200 whitespace-nowrap ${
               activeFilter === filter.value
                 ? "bg-white text-gray-900 shadow-sm ring-1 ring-gray-200"

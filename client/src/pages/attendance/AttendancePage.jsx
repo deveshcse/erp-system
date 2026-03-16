@@ -92,7 +92,10 @@ const AttendancePage = () => {
       <div className="shrink-0 flex flex-col lg:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
         <div className="flex p-1 bg-gray-100 rounded-xl w-full lg:w-auto">
           <button
-            onClick={() => setActiveTab("history")}
+            onClick={() => {
+              setActiveTab("history");
+              setParams((prev) => ({ ...prev, page: 1 }));
+            }}
             className={`flex-1 lg:flex-none px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${
               activeTab === "history"
                 ? "bg-white text-gray-900 shadow-sm"
@@ -102,7 +105,10 @@ const AttendancePage = () => {
             History
           </button>
           <button
-            onClick={() => setActiveTab("report")}
+            onClick={() => {
+              setActiveTab("report");
+              setParams((prev) => ({ ...prev, page: 1 }));
+            }}
             className={`flex-1 lg:flex-none px-6 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all duration-200 ${
               activeTab === "report"
                 ? "bg-white text-gray-900 shadow-sm"
@@ -121,9 +127,10 @@ const AttendancePage = () => {
             <input
               type="date"
               value={filters.startDate}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, startDate: e.target.value }))
-              }
+              onChange={(e) => {
+                setFilters((prev) => ({ ...prev, startDate: e.target.value }));
+                setParams((prev) => ({ ...prev, page: 1 }));
+              }}
               className="text-xs border-none bg-transparent focus:ring-0 p-0 font-black w-28"
             />
           </div>
@@ -134,9 +141,10 @@ const AttendancePage = () => {
             <input
               type="date"
               value={filters.endDate}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, endDate: e.target.value }))
-              }
+              onChange={(e) => {
+                setFilters((prev) => ({ ...prev, endDate: e.target.value }));
+                setParams((prev) => ({ ...prev, page: 1 }));
+              }}
               className="text-xs border-none bg-transparent focus:ring-0 p-0 font-black w-28"
             />
           </div>

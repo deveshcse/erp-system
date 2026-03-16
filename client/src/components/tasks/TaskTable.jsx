@@ -48,7 +48,7 @@ const TaskTable = ({ tasks, onStatusUpdate, isAdmin, isLoading }) => {
   };
 
   return (
-    <div className="flex-1 overflow-auto bg-white rounded-t-xl border shadow-sm">
+    <div className="flex-1 overflow-auto bg-white rounded-t-xl border shadow-sm max-h-85">
       <table className="table-standard">
         <thead>
           <tr>
