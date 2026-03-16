@@ -20,7 +20,7 @@ const Topbar = ({ onToggleSidebar }) => {
           onClick={onToggleSidebar}
           className="lg:hidden flex items-center justify-center w-4 h-4 rounded-lg hover:bg-gray-100 transition"
         >
-          <Menu size={20} className="md:hidden" />
+          <Menu size={20} className="" />
         </button>
 
         <span className="hidden sm:inline-flex items-center text-xs font-semibold text-indigo-600 uppercase tracking-wider bg-indigo-50 px-3 py-1 rounded-md">

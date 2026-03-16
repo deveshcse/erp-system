@@ -49,7 +49,6 @@ const Dashboard = () => {
   });
 
   const stats = dashboardStats?.data?.data || {};
-  console.log("Dashboard Stats:", stats);
 
   // --- Super Admin Queries ---
   const { data: companyStats } = useQuery({
