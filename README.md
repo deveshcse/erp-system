@@ -4,7 +4,7 @@ A modular Enterprise Resource Planning system built with MongoDB, Express.js, Re
 
 ---
 
-## checkout the platorm live
+## Checkout the platorm live
 
 https://erp-system-frontend-snowy.vercel.app/login
 
