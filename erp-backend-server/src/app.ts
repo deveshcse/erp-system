@@ -5,21 +5,14 @@ import cookieParser from "cookie-parser";
 import { pinoHttp as pinoHttpFactory } from "pino-http";
 const pinoHttp = pinoHttpFactory;
 import swaggerUi from "swagger-ui-express";
-import path from "path";
-import fs from "fs";
-
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 
 import { env, isDev } from "@/config/env.js";
 import { logger } from "@/config/logger.js";
+import { swaggerSpec } from "@/config/swagger.js";
 import { globalRateLimiter } from "@/middleware/rate-limiter.middleware.js";
 import { requestContext } from "@/middleware/request-context.middleware.js";
 import { errorHandler, notFoundHandler } from "@/middleware/error.middleware.js";
 import v1Router from "@/routes/v1/index.js";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
 // ---------------------------------------------------------------------------
 // createApp — factory function that wires up all Express middleware and routes.
@@ -88,31 +81,23 @@ export function createApp(): Application {
   app.use(globalRateLimiter);
 
   // ── 7. Swagger UI ────────────────────────────────────────────────────────
-  const swaggerSpecPath = path.resolve(__dirname, "../../swagger.json");
+  // swaggerSpec is built from @swagger JSDoc annotations in route files.
+  // Config lives in src/config/swagger.ts.
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customSiteTitle: "ERP API Documentation",
+      swaggerOptions: {
+        persistAuthorization: true,
+        displayRequestDuration: true,
+        filter: true,
+        tryItOutEnabled: isDev,
+      },
+    })
+  );
 
-  if (fs.existsSync(swaggerSpecPath)) {
-    const swaggerSpec = JSON.parse(fs.readFileSync(swaggerSpecPath, "utf-8")) as object;
-
-    app.use(
-      "/api-docs",
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerSpec, {
-        customSiteTitle: "ERP API Documentation",
-        swaggerOptions: {
-          persistAuthorization: true, // Keep token across page refreshes
-          displayRequestDuration: true,
-          filter: true,
-          tryItOutEnabled: isDev, // Only allow "Try it out" in development
-        },
-      })
-    );
-
-    logger.info("[App] Swagger UI available at /api-docs");
-  } else {
-    logger.warn(
-      "[App] swagger.json not found — run `npm run swagger` to generate API docs"
-    );
-  }
+  logger.info("[App] Swagger UI available at /api-docs");
 
   // ── 8. API routes ────────────────────────────────────────────────────────
   app.use(`/api/${env.API_VERSION}`, v1Router);

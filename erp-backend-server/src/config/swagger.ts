@@ -1,180 +1,95 @@
-import swaggerAutogen from "swagger-autogen";
+/**
+ * swagger.ts
+ *
+ * Single source of truth for the OpenAPI specification.
+ *
+ * - Imported by app.ts to serve the live Swagger UI.
+ * - Run directly via `npm run swagger` to write a static swagger.json
+ *   (useful for CI, deployment previews, or frontend code-gen tools).
+ */
+
+import swaggerJsdoc from "swagger-jsdoc";
+import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// process.cwd() resolves to the project root (erp-backend-server/)
+// regardless of how the file is invoked, so source paths are always correct.
+const srcDir = path.resolve(process.cwd(), "src");
 
 // ---------------------------------------------------------------------------
-// Swagger document definition — metadata and global definitions.
-// swagger-autogen scans the route files listed in endpointsFiles and
-// merges the JSDoc @swagger annotations with this base document.
+// OpenAPI definition
 // ---------------------------------------------------------------------------
-const doc = {
-  info: {
-    title: "ERP Backend API",
-    version: "1.0.0",
-    description:
-      "Production-grade ERP REST API with role-based access control (RBAC), " +
-      "multi-tenancy, JWT authentication with refresh token rotation, " +
-      "and comprehensive business modules.",
-    contact: {
-      name: "ERP Development Team",
-      email: "dev@erp.com",
-    },
-    license: {
-      name: "Private",
-    },
-  },
-  host: "localhost:5000",
-  basePath: "/api/v1",
-  schemes: ["http", "https"],
-  consumes: ["application/json"],
-  produces: ["application/json"],
-
-  // ── Security definitions ─────────────────────────────────────────────────
-  securityDefinitions: {
-    bearerAuth: {
-      type: "apiKey",
-      in: "header",
-      name: "Authorization",
+const options: swaggerJsdoc.Options = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "ERP Backend API",
+      version: "1.0.0",
       description:
-        'JWT access token. Format: "Bearer &lt;token&gt;". ' +
-        "Obtain from POST /api/v1/auth/login.",
+        "Production-grade ERP REST API with role-based access control (RBAC), " +
+        "multi-tenancy, JWT authentication with refresh token rotation, " +
+        "and comprehensive business modules.",
+      contact: { name: "ERP Development Team", email: "dev@erp.com" },
+      license: { name: "Private" },
     },
-  },
-
-  // ── Reusable response schemas ────────────────────────────────────────────
-  definitions: {
-    SuccessResponse: {
-      type: "object",
-      properties: {
-        success: { type: "boolean", example: true },
-        data: { type: "object" },
-        meta: {
-          type: "object",
-          properties: {
-            pagination: {
-              type: "object",
-              properties: {
-                page: { type: "integer", example: 1 },
-                limit: { type: "integer", example: 20 },
-                total: { type: "integer", example: 100 },
-                totalPages: { type: "integer", example: 5 },
-                hasNextPage: { type: "boolean", example: true },
-                hasPrevPage: { type: "boolean", example: false },
-              },
-            },
-          },
+    servers: [
+      {
+        url: `http://localhost:${process.env.PORT ?? 5001}/api/${process.env.API_VERSION ?? "v1"}`,
+        description: "Development server",
+      },
+    ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description: 'Obtain via POST /api/v1/auth/login, then pass as "Bearer <token>".',
         },
       },
     },
-    ErrorResponse: {
-      type: "object",
-      properties: {
-        success: { type: "boolean", example: false },
-        error: {
-          type: "object",
-          properties: {
-            code: {
-              type: "string",
-              example: "VALIDATION_ERROR",
-              description: "Machine-readable error code for programmatic handling",
-            },
-            message: {
-              type: "string",
-              example: "Validation failed on request body",
-            },
-            details: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  field: { type: "string", example: "email" },
-                  message: { type: "string", example: "Invalid email address" },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    User: {
-      type: "object",
-      properties: {
-        id: { type: "string" },
-        name: { type: "string" },
-        email: { type: "string" },
-        role: { type: "string", enum: ["SuperAdmin", "CompanyAdmin", "Employee"] },
-        companyId: { type: "string", nullable: true },
-        isActive: { type: "boolean" },
-        lastLoginAt: { type: "string", format: "date-time", nullable: true },
-      },
-    },
-    Company: {
-      type: "object",
-      properties: {
-        _id: { type: "string" },
-        name: { type: "string" },
-        email: { type: "string" },
-        address: { type: "string" },
-        contactNumber: { type: "string" },
-        gstNumber: { type: "string", nullable: true },
-        adminId: { type: "string", nullable: true },
-        isActive: { type: "boolean" },
-        createdAt: { type: "string", format: "date-time" },
-      },
-    },
-    Employee: {
-      type: "object",
-      properties: {
-        _id: { type: "string" },
-        employeeId: { type: "string", example: "EMP-00001" },
-        fullName: { type: "string" },
-        email: { type: "string" },
-        department: { type: "string" },
-        designation: { type: "string" },
-        salary: { type: "number" },
-        status: { type: "string", enum: ["Active", "Inactive"] },
-        joiningDate: { type: "string", format: "date" },
-      },
-    },
+    tags: [
+      { name: "Health",     description: "Health check endpoints" },
+      { name: "Auth",       description: "Authentication and session management" },
+      { name: "Companies",  description: "Company management (SuperAdmin)" },
+      { name: "Employees",  description: "Employee management (CompanyAdmin)" },
+      { name: "Attendance", description: "Attendance tracking" },
+      { name: "Payslips",   description: "Payroll processing" },
+      { name: "Tasks",      description: "Task assignment and tracking" },
+      { name: "Leads",      description: "Customer lead management" },
+      { name: "Quotations", description: "Sales quotations" },
+      { name: "Invoices",   description: "Invoice management" },
+    ],
   },
-
-  // ── Tags ordering in the Swagger UI ────────────────────────────────────
-  tags: [
-    { name: "Health", description: "Health check endpoints" },
-    { name: "Auth", description: "Authentication and session management" },
-    { name: "Companies", description: "Company management (SuperAdmin)" },
-    { name: "Employees", description: "Employee management (CompanyAdmin)" },
-    { name: "Attendance", description: "Attendance tracking" },
-    { name: "Payslips", description: "Payroll processing" },
-    { name: "Tasks", description: "Task assignment and tracking" },
-    { name: "Leads", description: "Customer lead management" },
-    { name: "Quotations", description: "Sales quotations" },
-    { name: "Invoices", description: "Invoice management" },
+  // Route files that contain @swagger JSDoc annotations
+  apis: [
+    path.join(srcDir, "routes/v1/index.ts"),
+    path.join(srcDir, "modules/auth/routes/auth.routes.ts"),
+    path.join(srcDir, "modules/company/routes/company.routes.ts"),
+    path.join(srcDir, "modules/employee/routes/employee.routes.ts"),
+    path.join(srcDir, "modules/attendance/routes/attendance.routes.ts"),
+    path.join(srcDir, "modules/payslip/routes/payslip.routes.ts"),
+    path.join(srcDir, "modules/task/routes/task.routes.ts"),
+    path.join(srcDir, "modules/crm/routes/crm.routes.ts"),
   ],
 };
 
 // ---------------------------------------------------------------------------
-// Output path — the generated spec file. swagger-ui-express serves this.
+// Build the spec — exported so app.ts can import and serve it directly.
 // ---------------------------------------------------------------------------
-const outputFile = path.resolve(__dirname, "../../swagger.json");
+export const swaggerSpec = swaggerJsdoc(options);
 
 // ---------------------------------------------------------------------------
-// Route files to scan — swagger-autogen reads the @swagger JSDoc annotations
-// from these files and merges them into the output document.
+// When run directly (`npm run swagger`), write a static swagger.json.
+// Useful for CI, API client code-gen, or deployment previews.
 // ---------------------------------------------------------------------------
-const endpointsFiles = [
-  path.resolve(__dirname, "../routes/v1/index.ts"),
-  path.resolve(__dirname, "../routes/v1/auth.routes.ts"),
-  path.resolve(__dirname, "../routes/v1/company.routes.ts"),
-  path.resolve(__dirname, "../routes/v1/modules.routes.ts"),
-];
-
-// ---------------------------------------------------------------------------
-// Run generation — called via `npm run swagger` before starting the server.
-// In development, the app.ts file regenerates the spec on startup.
-// ---------------------------------------------------------------------------
-const generate = swaggerAutogen({ openapi: "3.0.0" });
-generate(outputFile, endpointsFiles, doc).then(() => {
-  console.log("✅  Swagger spec generated at", outputFile);
-});
-
-export default generate;
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  const outputFile = path.resolve(__dirname, "../../swagger.json");
+  fs.writeFileSync(outputFile, JSON.stringify(swaggerSpec, null, 2), "utf-8");
+  console.log("✅  swagger.json written to", outputFile);
+}
