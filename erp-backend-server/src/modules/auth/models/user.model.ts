@@ -16,6 +16,8 @@ export interface IUser extends Document {
   companyId: mongoose.Types.ObjectId | null;
   isActive: boolean;
   lastLoginAt: Date | null;
+  passwordResetToken?: string;
+  passwordResetExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 
@@ -79,6 +81,14 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     lastLoginAt: {
       type: Date,
       default: null,
+    },
+    passwordResetToken: {
+      type: String,
+      select: false,
+    },
+    passwordResetExpires: {
+      type: Date,
+      select: false,
     },
   },
   {

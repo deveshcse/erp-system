@@ -9,6 +9,7 @@ import {
   verifyRefreshToken,
   hashToken,
   generateTokenFamily,
+  generateResetToken,
   getRefreshTokenExpiryDate,
 } from "@/utils/token.util.js";
 import {
@@ -280,3 +281,78 @@ export async function getUserSessions(userId: string) {
     { refreshTokenHash: 0 } // Never return the hash
   ).sort({ createdAt: -1 });
 }
+
+// ---------------------------------------------------------------------------
+// forgotPassword
+//
+// Generates a reset token, saves its hash to the user, and "sends" it.
+// Returns the raw token string (only used for logging in dev).
+// ---------------------------------------------------------------------------
+export async function forgotPassword(email: string): Promise<string> {
+  // 1. Find user — don't throw error if not found to avoid enumeration.
+  const user = await User.findOne({ email });
+  if (!user || !user.isActive) {
+    logger.warn({ email }, "[Auth] Forgot password request for non-existent or inactive user");
+    return "";
+  }
+
+  // 2. Generate and hash token.
+  const resetToken = generateResetToken();
+  user.passwordResetToken = hashToken(resetToken);
+  user.passwordResetExpires = new Date(Date.now() + 3600000); // 1 hour
+
+  await user.save();
+
+  // 3. "Send" the email by logging to console (simulated for now).
+  const resetUrl = `${env.CORS_ORIGINS[0]}/reset-password/${resetToken}`;
+  
+  console.log("\n---------------------------------------------------------");
+  console.log("📧 PASSWORD RESET EMAIL (SIMULATED)");
+  console.log(`To: ${email}`);
+  console.log(`Link: ${resetUrl}`);
+  console.log("---------------------------------------------------------\n");
+
+  logger.info({ userId: user._id, email }, "[Auth] Password reset token generated");
+
+  return resetToken;
+}
+
+
+
+
+// ---------------------------------------------------------------------------
+// resetPassword
+//
+// Verifies the token and updates the user's password.
+// ---------------------------------------------------------------------------
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  // 1. Hash the incoming token to compare with DB.
+  const hashedToken = hashToken(token);
+
+  // 2. Find user with valid, non-expired token.
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: new Date() },
+  }).select("+passwordResetToken +passwordResetExpires");
+
+  if (!user) {
+    throw new AppError(
+      "Password reset token is invalid or has expired",
+      HTTP_STATUS.BAD_REQUEST,
+      ERROR_CODES.TOKEN_INVALID
+    );
+  }
+
+  // 3. Update password and clear reset fields.
+  user.password = newPassword;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save();
+
+  // 4. Invalidate all existing sessions for security.
+  await logoutAll(user._id.toString());
+
+  logger.info({ userId: user._id }, "[Auth] Password reset successfully");
+}
+

@@ -3,7 +3,7 @@ import * as authController from "../controllers/auth.controller.js";
 import { authenticate } from "@/middleware/authenticate.middleware.js";
 import { validate } from "@/middleware/validate.middleware.js";
 import { authRateLimiter } from "@/middleware/rate-limiter.middleware.js";
-import { loginSchema } from "../schemas/auth.schema.js";
+import { loginSchema, forgotPasswordSchema, resetPasswordSchema } from "../schemas/auth.schema.js";
 
 const router = Router();
 
@@ -124,4 +124,59 @@ router.get("/sessions", authenticate, authController.getSessions);
  */
 router.get("/me", authenticate, authController.getMe);
 
+/**
+ * @swagger
+ * /auth/forgot-password:
+ *   post:
+ *     summary: Request a password reset link
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ForgotPasswordInput'
+ *     responses:
+ *       200:
+ *         description: Success message (sent regardless of email existence)
+ */
+router.post(
+  "/forgot-password",
+  authRateLimiter,
+  validate(forgotPasswordSchema, "body"),
+  authController.forgotPassword
+);
+
+/**
+ * @swagger
+ * /auth/reset-password/{token}:
+ *   post:
+ *     summary: Reset password using a valid token
+ *     tags: [Auth]
+ *     parameters:
+ *       - in: path
+ *         name: token
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ResetPasswordInput'
+ *     responses:
+ *       200:
+ *         description: Password reset successful
+ *       400:
+ *         description: Invalid or expired token
+ */
+router.post(
+  "/reset-password/:token",
+  authRateLimiter,
+  validate(resetPasswordSchema, "body"),
+  authController.resetPassword
+);
+
 export default router;
+

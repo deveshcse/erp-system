@@ -70,6 +70,7 @@ const options: swaggerJsdoc.Options = {
   apis: [
     path.join(srcDir, "routes/v1/index.ts"),
     path.join(srcDir, "modules/auth/routes/auth.routes.ts"),
+    path.join(srcDir, "modules/auth/schemas/auth.schema.ts"),
     path.join(srcDir, "modules/company/routes/company.routes.ts"),
     path.join(srcDir, "modules/employee/routes/employee.routes.ts"),
     path.join(srcDir, "modules/attendance/routes/attendance.routes.ts"),

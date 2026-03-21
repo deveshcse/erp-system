@@ -3,7 +3,7 @@ import * as authService from "../services/auth.service.js";
 import { sendSuccess } from "@/utils/response.util.js";
 import { HTTP_STATUS, COOKIE_NAMES, ERROR_CODES } from "@/constants/index.js";
 import { env, isProd } from "@/config/env.js";
-import { type LoginInput } from "../schemas/auth.schema.js";
+import { type LoginInput, type ForgotPasswordInput, type ResetPasswordInput } from "../schemas/auth.schema.js";
 import { UnauthorizedError } from "@/utils/errors.util.js";
 import { getRefreshTokenExpiryDate } from "@/utils/token.util.js";
 
@@ -156,3 +156,48 @@ export async function getMe(
     next(error);
   }
 }
+
+// ---------------------------------------------------------------------------
+// forgotPassword
+// POST /api/v1/auth/forgot-password
+// ---------------------------------------------------------------------------
+export async function forgotPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { email } = req.body as ForgotPasswordInput;
+    await authService.forgotPassword(email);
+
+    sendSuccess(res, {
+      message: "If an account exists with that email, a password reset link has been sent.",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// resetPassword
+// POST /api/v1/auth/reset-password/:token
+// ---------------------------------------------------------------------------
+export async function resetPassword(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
+  try {
+    const { token } = req.params;
+    const { password } = req.body as ResetPasswordInput;
+
+    await authService.resetPassword(token as string, password);
+
+    sendSuccess(res, {
+      message: "Password has been reset successfully. You can now log in with your new password.",
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
