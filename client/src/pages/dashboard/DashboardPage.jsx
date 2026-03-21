@@ -31,13 +31,14 @@ const ChartContainer = ({ title, children }) => (
       <span className="w-2 h-2 bg-gray-900 rounded-full"></span>
       {title}
     </h3>
-    <div className="w-full h-100">
+    <div className="w-full" style={{ height: '300px' }}>  {/* ← concrete px height */}
       <ResponsiveContainer width="100%" height="100%">
         {children}
       </ResponsiveContainer>
     </div>
   </div>
 );
+
 
 const Dashboard = () => {
   const { user } = useAuth();
