@@ -1,4 +1,4 @@
-import { User } from "@/models/user.model";
+import { User } from "@/modules/auth/models/user.model";
 import { env } from "@/config/env";
 import { logger } from "@/config/logger";
 import { ROLES } from "@/constants";
