@@ -1,13 +1,13 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { sendSuccess, buildPaginationMeta } from "@/utils/response.util";
-import { getParam } from "@/utils/request.util";
-import { HTTP_STATUS } from "@/constants";
-import * as employeeService from "../services/employee.service";
+import { sendSuccess, buildPaginationMeta } from "@/utils/response.util.js";
+import { getParam } from "@/utils/request.util.js";
+import { HTTP_STATUS } from "@/constants/index.js";
+import * as employeeService from "../services/employee.service.js";
 import {
   type CreateEmployeeInput,
   type UpdateEmployeeInput,
   type ListEmployeesQuery,
-} from "../schemas/employee.schema";
+} from "../schemas/employee.schema.js";
 
 // ============================================================================
 // EMPLOYEE CONTROLLER

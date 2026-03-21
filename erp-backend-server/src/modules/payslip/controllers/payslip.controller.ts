@@ -1,12 +1,12 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { sendSuccess, buildPaginationMeta } from "@/utils/response.util";
-import { getParam } from "@/utils/request.util";
-import { HTTP_STATUS } from "@/constants";
-import * as payslipService from "../services/payslip.service";
+import { sendSuccess, buildPaginationMeta } from "@/utils/response.util.js";
+import { getParam } from "@/utils/request.util.js";
+import { HTTP_STATUS } from "@/constants/index.js";
+import * as payslipService from "../services/payslip.service.js";
 import {
   type CreatePayslipInput,
   type PayslipQuery,
-} from "../schemas/payslip.schema";
+} from "../schemas/payslip.schema.js";
 
 // ============================================================================
 // PAYSLIP CONTROLLER

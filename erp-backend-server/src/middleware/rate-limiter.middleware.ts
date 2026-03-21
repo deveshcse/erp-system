@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
-import { env } from "@/config/env";
-import { ERROR_CODES, HTTP_STATUS } from "@/constants";
-import { type ErrorResponse } from "@/types";
+import { env } from "@/config/env.js";
+import { ERROR_CODES, HTTP_STATUS } from "@/constants/index.js";
+import { type ErrorResponse } from "@/types/index.js";
 
 // ---------------------------------------------------------------------------
 // Rate limiter response — uses the standard error shape so the frontend

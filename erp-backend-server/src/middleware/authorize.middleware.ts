@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { hasPermission } from "@/constants/permissions";
-import { ForbiddenError, UnauthorizedError } from "@/utils/errors.util";
-import { type Resource, type Action, ROLES } from "@/constants";
+import { hasPermission } from "@/constants/permissions.js";
+import { ForbiddenError, UnauthorizedError } from "@/utils/errors.util.js";
+import { type Resource, type Action, ROLES } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // authorize

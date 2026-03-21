@@ -1,4 +1,4 @@
-import { ROLES, RESOURCES, ACTIONS, type Role, type Resource, type Action } from "@/constants";
+import { ROLES, RESOURCES, ACTIONS, type Role, type Resource, type Action } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // Permission Matrix

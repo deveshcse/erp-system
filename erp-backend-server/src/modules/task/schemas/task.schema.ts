@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { TASK_PRIORITY, TASK_STATUS } from "@/constants";
+import { TASK_PRIORITY, TASK_STATUS } from "@/constants/index.js";
 
 const objectIdSchema = z
   .string()

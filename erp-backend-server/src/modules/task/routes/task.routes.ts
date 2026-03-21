@@ -1,14 +1,14 @@
 import { Router } from "express";
-import * as ctrl from "../controllers/task.controller";
-import { authenticate } from "@/middleware/authenticate.middleware";
-import { authorize } from "@/middleware/authorize.middleware";
-import { validate } from "@/middleware/validate.middleware";
-import { RESOURCES, ACTIONS } from "@/constants";
+import * as ctrl from "../controllers/task.controller.js";
+import { authenticate } from "@/middleware/authenticate.middleware.js";
+import { authorize } from "@/middleware/authorize.middleware.js";
+import { validate } from "@/middleware/validate.middleware.js";
+import { RESOURCES, ACTIONS } from "@/constants/index.js";
 import {
   createTaskSchema,
   updateTaskSchema,
   taskQuerySchema,
-} from "../schemas/task.schema";
+} from "../schemas/task.schema.js";
 
 // ============================================================================
 // TASK ROUTES

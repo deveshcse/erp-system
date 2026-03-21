@@ -1,13 +1,13 @@
 import { Router } from "express";
-import * as ctrl from "../controllers/attendance.controller";
-import { authenticate } from "@/middleware/authenticate.middleware";
-import { authorize } from "@/middleware/authorize.middleware";
-import { validate } from "@/middleware/validate.middleware";
-import { RESOURCES, ACTIONS } from "@/constants";
+import * as ctrl from "../controllers/attendance.controller.js";
+import { authenticate } from "@/middleware/authenticate.middleware.js";
+import { authorize } from "@/middleware/authorize.middleware.js";
+import { validate } from "@/middleware/validate.middleware.js";
+import { RESOURCES, ACTIONS } from "@/constants/index.js";
 import {
   markAttendanceSchema,
   attendanceQuerySchema,
-} from "../schemas/attendance.schema";
+} from "../schemas/attendance.schema.js";
 
 // ============================================================================
 // ATTENDANCE ROUTES

@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-import { Task } from "../models/task.model";
-import { Employee } from "@/modules/employee/models/employee.model";
-import { logger } from "@/config/logger";
-import { TASK_STATUS, ROLES } from "@/constants";
-import { NotFoundError, ForbiddenError } from "@/utils/errors.util";
+import { Task } from "../models/task.model.js";
+import { Employee } from "@/modules/employee/models/employee.model.js";
+import { logger } from "@/config/logger.js";
+import { TASK_STATUS, ROLES } from "@/constants/index.js";
+import { NotFoundError, ForbiddenError } from "@/utils/errors.util.js";
 import {
   type CreateTaskInput,
   type UpdateTaskInput,
   type TaskQuery,
-} from "../schemas/task.schema";
+} from "../schemas/task.schema.js";
 export type UpdateTaskStatusInput = { status: (typeof TASK_STATUS)[keyof typeof TASK_STATUS] };
-import { getPaginationSkip } from "@/utils/pagination.util";
-import { type Role } from "@/constants";
+import { getPaginationSkip } from "@/utils/pagination.util.js";
+import { type Role } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // createTask — admin assigns task to an employee

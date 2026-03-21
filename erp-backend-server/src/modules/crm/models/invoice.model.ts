@@ -1,5 +1,5 @@
 import mongoose, { Schema, type Document, type Model } from "mongoose";
-import { PAYMENT_STATUS, type PaymentStatus } from "@/constants";
+import { PAYMENT_STATUS, type PaymentStatus } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // Sub-document: Invoice Line Item (same shape as quotation line item)

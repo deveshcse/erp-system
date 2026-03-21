@@ -8,7 +8,7 @@
 // routes can use the standard RequestHandler type while still having access
 // to req.user after the authenticate middleware runs.
 // ---------------------------------------------------------------------------
-import { type Role } from "@/constants";
+import { type Role } from "@/constants/index.js";
 
 declare global {
   namespace Express {

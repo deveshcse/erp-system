@@ -1,13 +1,13 @@
 import { type Request, type Response, type NextFunction } from "express";
-import * as companyService from "../services/company.service";
-import { sendSuccess, buildPaginationMeta } from "@/utils/response.util";
-import { parsePagination } from "@/utils/pagination.util";
-import { getParam } from "@/utils/request.util";
-import { HTTP_STATUS } from "@/constants";
+import * as companyService from "../services/company.service.js";
+import { sendSuccess, buildPaginationMeta } from "@/utils/response.util.js";
+import { parsePagination } from "@/utils/pagination.util.js";
+import { getParam } from "@/utils/request.util.js";
+import { HTTP_STATUS } from "@/constants/index.js";
 import {
   type CreateCompanyInput,
   type UpdateCompanyInput,
-} from "../schemas/company.schema";
+} from "../schemas/company.schema.js";
 
 // ---------------------------------------------------------------------------
 // createCompany

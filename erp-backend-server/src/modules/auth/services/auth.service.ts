@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { User } from "../models/user.model";
-import { Session } from "../models/session.model";
-import { logger } from "@/config/logger";
-import { env } from "@/config/env";
+import { User } from "../models/user.model.js";
+import { Session } from "../models/session.model.js";
+import { logger } from "@/config/logger.js";
+import { env } from "@/config/env.js";
 import {
   signAccessToken,
   signRefreshToken,
@@ -10,13 +10,13 @@ import {
   hashToken,
   generateTokenFamily,
   getRefreshTokenExpiryDate,
-} from "@/utils/token.util";
+} from "@/utils/token.util.js";
 import {
   UnauthorizedError,
   AppError,
-} from "@/utils/errors.util";
-import { ERROR_CODES, HTTP_STATUS } from "@/constants";
-import { type LoginInput } from "../schemas/auth.schema";
+} from "@/utils/errors.util.js";
+import { ERROR_CODES, HTTP_STATUS } from "@/constants/index.js";
+import { type LoginInput } from "../schemas/auth.schema.js";
 
 // ---------------------------------------------------------------------------
 // Types

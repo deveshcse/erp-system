@@ -1,7 +1,7 @@
-import { User } from "@/modules/auth/models/user.model";
-import { env } from "@/config/env";
-import { logger } from "@/config/logger";
-import { ROLES } from "@/constants";
+import { User } from "@/modules/auth/models/user.model.js";
+import { env } from "@/config/env.js";
+import { logger } from "@/config/logger.js";
+import { ROLES } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // seedSuperAdmin

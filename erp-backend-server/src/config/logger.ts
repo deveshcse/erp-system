@@ -1,5 +1,5 @@
 import pino from "pino";
-import { env, isDev } from "@/config/env";
+import { env, isDev } from "@/config/env.js";
 
 // ---------------------------------------------------------------------------
 // Logger — Pino with pretty-printing in development and structured JSON in

@@ -2,7 +2,7 @@ import mongoose, { Schema, type Document, type Model } from "mongoose";
 import {
   EMPLOYEE_STATUS,
   type EmployeeStatus,
-} from "@/constants";
+} from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // Interface

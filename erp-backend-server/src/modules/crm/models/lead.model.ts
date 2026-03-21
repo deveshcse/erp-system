@@ -4,7 +4,7 @@ import {
   LEAD_SOURCE,
   type LeadStatus,
   type LeadSource,
-} from "@/constants";
+} from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // Interface

@@ -1,6 +1,6 @@
 import { type Request } from "express";
-import { PAGINATION } from "@/constants";
-import { type PaginationQuery } from "@/types";
+import { PAGINATION } from "@/constants/index.js";
+import { type PaginationQuery } from "@/types/index.js";
 
 // ---------------------------------------------------------------------------
 // parsePagination

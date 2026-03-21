@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { LEAD_SOURCE, LEAD_STATUS, PAYMENT_STATUS } from "@/constants";
+import { LEAD_SOURCE, LEAD_STATUS, PAYMENT_STATUS } from "@/constants/index.js";
 
 const objectIdSchema = z
   .string()

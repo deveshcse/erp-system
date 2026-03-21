@@ -1,18 +1,25 @@
-import express, { type Application } from "express";
+import express, { type Application, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
-import pinoHttp from "pino-http";
+import { pinoHttp as pinoHttpFactory } from "pino-http";
+const pinoHttp = pinoHttpFactory;
 import swaggerUi from "swagger-ui-express";
 import path from "path";
 import fs from "fs";
 
-import { env, isDev } from "@/config/env";
-import { logger } from "@/config/logger";
-import { globalRateLimiter } from "@/middleware/rate-limiter.middleware";
-import { requestContext } from "@/middleware/request-context.middleware";
-import { errorHandler, notFoundHandler } from "@/middleware/error.middleware";
-import v1Router from "@/routes/v1/index";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+import { env, isDev } from "@/config/env.js";
+import { logger } from "@/config/logger.js";
+import { globalRateLimiter } from "@/middleware/rate-limiter.middleware.js";
+import { requestContext } from "@/middleware/request-context.middleware.js";
+import { errorHandler, notFoundHandler } from "@/middleware/error.middleware.js";
+import v1Router from "@/routes/v1/index.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // ---------------------------------------------------------------------------
 // createApp — factory function that wires up all Express middleware and routes.
@@ -59,12 +66,12 @@ export function createApp(): Application {
     pinoHttp({
       logger,
       // Use the correlation ID we set in requestContext.
-      genReqId: (req) => req.requestId,
+      genReqId: (req: Request) => req.requestId as string,
       // Don't log health check requests — too noisy.
       autoLogging: {
-        ignore: (req) => req.url === `/api/${env.API_VERSION}/health`,
+        ignore: (req: Request) => req.url === `/api/${env.API_VERSION}/health`,
       },
-      customLogLevel(_req, res, error) {
+      customLogLevel(_req: Request, res: Response, error: Error | undefined) {
         if (error || res.statusCode >= 500) return "error";
         if (res.statusCode >= 400) return "warn";
         return "info";

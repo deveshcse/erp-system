@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { verifyAccessToken } from "@/utils/token.util";
-import { UnauthorizedError } from "@/utils/errors.util";
-import { ERROR_CODES, ROLES, type Role } from "@/constants";
+import { verifyAccessToken } from "@/utils/token.util.js";
+import { UnauthorizedError } from "@/utils/errors.util.js";
+import { ERROR_CODES, ROLES, type Role } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // authenticate

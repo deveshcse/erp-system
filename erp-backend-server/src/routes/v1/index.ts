@@ -1,11 +1,11 @@
 import { Router } from "express";
-import authRoutes from "@/modules/auth/routes/auth.routes";
-import companyRoutes from "@/modules/company/routes/company.routes";
-import employeeRouter from "@/modules/employee/routes/employee.routes";
-import attendanceRouter from "@/modules/attendance/routes/attendance.routes";
-import payslipRouter from "@/modules/payslip/routes/payslip.routes";
-import taskRouter from "@/modules/task/routes/task.routes";
-import crmRouter from "@/modules/crm/routes/crm.routes";
+import authRoutes from "@/modules/auth/routes/auth.routes.js";
+import companyRoutes from "@/modules/company/routes/company.routes.js";
+import employeeRouter from "@/modules/employee/routes/employee.routes.js";
+import attendanceRouter from "@/modules/attendance/routes/attendance.routes.js";
+import payslipRouter from "@/modules/payslip/routes/payslip.routes.js";
+import taskRouter from "@/modules/task/routes/task.routes.js";
+import crmRouter from "@/modules/crm/routes/crm.routes.js";
 
 const router = Router();
 

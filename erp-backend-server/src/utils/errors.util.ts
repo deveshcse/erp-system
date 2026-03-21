@@ -1,4 +1,4 @@
-import { HTTP_STATUS, ERROR_CODES, type HttpStatus, type ErrorCode } from "@/constants";
+import { HTTP_STATUS, ERROR_CODES, type HttpStatus, type ErrorCode } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // AppError — base class for all known, expected errors in the application.

@@ -1,5 +1,5 @@
 import mongoose, { Schema, type Document, type Model } from "mongoose";
-import { ATTENDANCE_STATUS, type AttendanceStatus } from "@/constants";
+import { ATTENDANCE_STATUS, type AttendanceStatus } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // Interface

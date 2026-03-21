@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import { Lead } from "../models/lead.model";
-import { Quotation } from "../models/quotation.model";
-import { Invoice } from "../models/invoice.model";
-import { logger } from "@/config/logger";
-import { PAYMENT_STATUS } from "@/constants";
-import { NotFoundError } from "@/utils/errors.util";
+import { Lead } from "../models/lead.model.js";
+import { Quotation } from "../models/quotation.model.js";
+import { Invoice } from "../models/invoice.model.js";
+import { logger } from "@/config/logger.js";
+import { PAYMENT_STATUS } from "@/constants/index.js";
+import { NotFoundError } from "@/utils/errors.util.js";
 import {
   type CreateLeadInput,
   type UpdateLeadInput,
@@ -12,10 +12,10 @@ import {
   type CreateQuotationInput,
   type CreateInvoiceInput,
   type UpdatePaymentStatusInput,
-} from "../schemas/crm.schema";
-import { generateDocumentNumber } from "@/utils/document-number.util";
-import { getPaginationSkip } from "@/utils/pagination.util";
-import { type PaginationQuery } from "@/types";
+} from "../schemas/crm.schema.js";
+import { generateDocumentNumber } from "@/utils/document-number.util.js";
+import { getPaginationSkip } from "@/utils/pagination.util.js";
+import { type PaginationQuery } from "@/types/index.js";
 
 // ============================================================================
 // LEAD SERVICE

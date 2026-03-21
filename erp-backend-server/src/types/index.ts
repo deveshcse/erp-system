@@ -1,5 +1,5 @@
 import { type Request } from "express";
-import { type Role } from "@/constants";
+import { type Role } from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // Authenticated Request — every protected route gets this augmented Request.

@@ -1,12 +1,12 @@
 import { type Request, type Response, type NextFunction } from "express";
 import mongoose from "mongoose";
-import { AppError } from "@/utils/errors.util";
-import { sendError } from "@/utils/response.util";
-import { logger } from "@/config/logger";
+import { AppError } from "@/utils/errors.util.js";
+import { sendError } from "@/utils/response.util.js";
+import { logger } from "@/config/logger.js";
 import {
   HTTP_STATUS,
   ERROR_CODES,
-} from "@/constants";
+} from "@/constants/index.js";
 
 // ---------------------------------------------------------------------------
 // errorHandler

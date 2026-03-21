@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ATTENDANCE_STATUS } from "@/constants";
+import { ATTENDANCE_STATUS } from "@/constants/index.js";
 
 const objectIdSchema = z
   .string()

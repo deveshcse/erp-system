@@ -1,10 +1,10 @@
 import http from "http";
-import { createApp } from "@/app";
-import { connectDB, disconnectDB } from "@/config/database";
-import { env } from "@/config/env";
-import { logger } from "@/config/logger";
-import { initializeSocket } from "@/socket/socket.service";
-import { seedSuperAdmin } from "@/utils/seeder.util";
+import { createApp } from "@/app.js";
+import { connectDB, disconnectDB } from "@/config/database.js";
+import { env } from "@/config/env.js";
+import { logger } from "@/config/logger.js";
+import { initializeSocket } from "@/socket/socket.service.js";
+import { seedSuperAdmin } from "@/utils/seeder.util.js";
 
 // ---------------------------------------------------------------------------
 // Startup sequence:

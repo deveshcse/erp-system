@@ -1,12 +1,12 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { sendSuccess, buildPaginationMeta } from "@/utils/response.util";
-import { getParam } from "@/utils/request.util";
-import { HTTP_STATUS } from "@/constants";
-import * as attendanceService from "../services/attendance.service";
+import { sendSuccess, buildPaginationMeta } from "@/utils/response.util.js";
+import { getParam } from "@/utils/request.util.js";
+import { HTTP_STATUS } from "@/constants/index.js";
+import * as attendanceService from "../services/attendance.service.js";
 import {
   type MarkAttendanceInput,
   type AttendanceQuery,
-} from "../schemas/attendance.schema";
+} from "../schemas/attendance.schema.js";
 
 // ============================================================================
 // ATTENDANCE CONTROLLER

@@ -1,13 +1,13 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { sendSuccess, buildPaginationMeta } from "@/utils/response.util";
-import { getParam } from "@/utils/request.util";
-import { HTTP_STATUS } from "@/constants";
-import * as taskService from "../services/task.service";
+import { sendSuccess, buildPaginationMeta } from "@/utils/response.util.js";
+import { getParam } from "@/utils/request.util.js";
+import { HTTP_STATUS } from "@/constants/index.js";
+import * as taskService from "../services/task.service.js";
 import {
   type CreateTaskInput,
   type UpdateTaskInput,
   type TaskQuery,
-} from "../schemas/task.schema";
+} from "../schemas/task.schema.js";
 
 // ============================================================================
 // TASK CONTROLLER

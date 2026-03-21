@@ -1,6 +1,6 @@
 import { type Response } from "express";
-import { HTTP_STATUS, type HttpStatus } from "@/constants";
-import { type SuccessResponse, type ErrorResponse, type ResponseMeta } from "@/types";
+import { HTTP_STATUS, type HttpStatus } from "@/constants/index.js";
+import { type SuccessResponse, type ErrorResponse, type ResponseMeta } from "@/types/index.js";
 
 // ---------------------------------------------------------------------------
 // sendSuccess

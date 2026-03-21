@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
-import { Company } from "../models/company.model";
-import { User } from "@/modules/auth/models/user.model";
-import { logger } from "@/config/logger";
-import { ROLES } from "@/constants";
-import { NotFoundError, ConflictError } from "@/utils/errors.util";
+import { Company } from "../models/company.model.js";
+import { User } from "@/modules/auth/models/user.model.js";
+import { logger } from "@/config/logger.js";
+import { ROLES } from "@/constants/index.js";
+import { NotFoundError, ConflictError } from "@/utils/errors.util.js";
 import {
   type CreateCompanyInput,
   type UpdateCompanyInput,
-} from "../schemas/company.schema";
-import { type PaginationQuery } from "@/types";
-import { getPaginationSkip } from "@/utils/pagination.util";
+} from "../schemas/company.schema.js";
+import { type PaginationQuery } from "@/types/index.js";
+import { getPaginationSkip } from "@/utils/pagination.util.js";
 
 // ---------------------------------------------------------------------------
 // createCompany

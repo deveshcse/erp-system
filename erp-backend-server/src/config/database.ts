@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import { env } from "@/config/env";
-import { logger } from "@/config/logger";
+import { env } from "@/config/env.js";
+import { logger } from "@/config/logger.js";
 
 // ---------------------------------------------------------------------------
 // Connection options — tuned for production reliability.

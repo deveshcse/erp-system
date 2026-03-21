@@ -1,12 +1,11 @@
 import { type Request, type Response, type NextFunction } from "express";
-import * as authService from "../services/auth.service";
-import { sendSuccess } from "@/utils/response.util";
-import { HTTP_STATUS, COOKIE_NAMES } from "@/constants";
-import { env, isProd } from "@/config/env";
-import { type LoginInput } from "../schemas/auth.schema";
-import { UnauthorizedError } from "@/utils/errors.util";
-import { ERROR_CODES } from "@/constants";
-import { getRefreshTokenExpiryDate } from "@/utils/token.util";
+import * as authService from "../services/auth.service.js";
+import { sendSuccess } from "@/utils/response.util.js";
+import { HTTP_STATUS, COOKIE_NAMES, ERROR_CODES } from "@/constants/index.js";
+import { env, isProd } from "@/config/env.js";
+import { type LoginInput } from "../schemas/auth.schema.js";
+import { UnauthorizedError } from "@/utils/errors.util.js";
+import { getRefreshTokenExpiryDate } from "@/utils/token.util.js";
 
 // ---------------------------------------------------------------------------
 // Cookie options — consistent across login and refresh endpoints.

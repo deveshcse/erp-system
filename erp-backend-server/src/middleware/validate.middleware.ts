@@ -1,6 +1,6 @@
 import { type Request, type Response, type NextFunction } from "express";
 import { type ZodSchema, ZodError } from "zod";
-import { ValidationError } from "@/utils/errors.util";
+import { ValidationError } from "@/utils/errors.util.js";
 
 // ---------------------------------------------------------------------------
 // Target — which part of the request to validate.

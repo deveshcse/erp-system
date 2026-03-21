@@ -1,7 +1,7 @@
 import { Server as HttpServer } from "http";
 import { Server as SocketIOServer, type Socket } from "socket.io";
-import { env } from "@/config/env";
-import { logger } from "@/config/logger";
+import { env } from "@/config/env.js";
+import { logger } from "@/config/logger.js";
 
 // ---------------------------------------------------------------------------
 // Module-level singleton — initialized once in server.ts.
@@ -40,10 +40,10 @@ export function initializeSocket(httpServer: HttpServer): SocketIOServer {
 
     // ── TODO: Register event handlers here as features are built ──────────
     // Example:
-    //   import { registerNotificationHandlers } from "./handlers/notification.handler";
+    //   import { registerNotificationHandlers } from "./handlers/notification.handler.js";
     //   registerNotificationHandlers(io!, socket);
     //
-    //   import { registerAttendanceHandlers } from "./handlers/attendance.handler";
+    //   import { registerAttendanceHandlers } from "./handlers/attendance.handler.js";
     //   registerAttendanceHandlers(io!, socket);
 
     socket.on("disconnect", (reason) => {
@@ -69,7 +69,7 @@ export function initializeSocket(httpServer: HttpServer): SocketIOServer {
 // events without needing a direct reference to the server.
 //
 // Usage in a service:
-//   import { getIO } from "@/socket/socket.service";
+//   import { getIO } from "@/socket/socket.service.js";
 //   getIO().to(`company:${companyId}`).emit("attendance:marked", data);
 // ---------------------------------------------------------------------------
 export function getIO(): SocketIOServer {

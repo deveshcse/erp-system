@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
-import { Employee } from "../models/employee.model";
-import { User } from "@/modules/auth/models/user.model";
-import { logger } from "@/config/logger";
-import { ROLES, EMPLOYEE_STATUS } from "@/constants";
-import { NotFoundError, ConflictError } from "@/utils/errors.util";
+import { Employee } from "../models/employee.model.js";
+import { User } from "@/modules/auth/models/user.model.js";
+import { logger } from "@/config/logger.js";
+import { ROLES, EMPLOYEE_STATUS } from "@/constants/index.js";
+import { NotFoundError, ConflictError } from "@/utils/errors.util.js";
 import {
   type CreateEmployeeInput,
   type UpdateEmployeeInput,
   type ListEmployeesQuery,
-} from "../schemas/employee.schema";
-import { generateDocumentNumber } from "@/utils/document-number.util";
-import { getPaginationSkip } from "@/utils/pagination.util";
+} from "../schemas/employee.schema.js";
+import { generateDocumentNumber } from "@/utils/document-number.util.js";
+import { getPaginationSkip } from "@/utils/pagination.util.js";
 
 // ---------------------------------------------------------------------------
 // createEmployee

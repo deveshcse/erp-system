@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import { Payslip } from "../models/payslip.model";
-import { Employee } from "@/modules/employee/models/employee.model";
-import { Attendance } from "@/modules/attendance/models/attendance.model";
-import { logger } from "@/config/logger";
-import { ATTENDANCE_STATUS, PAYMENT_STATUS } from "@/constants";
-import { NotFoundError, ConflictError, AppError } from "@/utils/errors.util";
-import { HTTP_STATUS, ERROR_CODES } from "@/constants";
-import { type CreatePayslipInput as GeneratePayslipInput } from "../schemas/payslip.schema";
-import { getPaginationSkip } from "@/utils/pagination.util";
-import { type PaginationQuery } from "@/types";
+import { Payslip } from "../models/payslip.model.js";
+import { Employee } from "@/modules/employee/models/employee.model.js";
+import { Attendance } from "@/modules/attendance/models/attendance.model.js";
+import { logger } from "@/config/logger.js";
+import { ATTENDANCE_STATUS, PAYMENT_STATUS } from "@/constants/index.js";
+import { NotFoundError, ConflictError, AppError } from "@/utils/errors.util.js";
+import { HTTP_STATUS, ERROR_CODES } from "@/constants/index.js";
+import { type CreatePayslipInput as GeneratePayslipInput } from "../schemas/payslip.schema.js";
+import { getPaginationSkip } from "@/utils/pagination.util.js";
+import { type PaginationQuery } from "@/types/index.js";
 
 // ---------------------------------------------------------------------------
 // generatePayslip

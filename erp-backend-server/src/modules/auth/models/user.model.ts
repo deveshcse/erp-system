@@ -1,7 +1,7 @@
 import mongoose, { Schema, type Document, type Model } from "mongoose";
 import bcrypt from "bcryptjs";
-import { ROLES, type Role } from "@/constants";
-import { env } from "@/config/env";
+import { ROLES, type Role } from "@/constants/index.js";
+import { env } from "@/config/env.js";
 
 // ---------------------------------------------------------------------------
 // Interface — the shape of a User document.

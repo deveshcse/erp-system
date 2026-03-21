@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { env } from "@/config/env";
-import { ERROR_CODES } from "@/constants";
-import { UnauthorizedError } from "@/utils/errors.util";
+import { env } from "@/config/env.js";
+import { ERROR_CODES } from "@/constants/index.js";
+import { UnauthorizedError } from "@/utils/errors.util.js";
 import {
   type AccessTokenPayload,
   type RefreshTokenPayload,
-} from "@/types";
+} from "@/types/index.js";
 
 // ---------------------------------------------------------------------------
 // signAccessToken

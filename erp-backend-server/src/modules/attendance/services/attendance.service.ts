@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
-import { Attendance } from "../models/attendance.model";
-import { Employee } from "@/modules/employee/models/employee.model";
-import { logger } from "@/config/logger";
-import { ATTENDANCE_STATUS } from "@/constants";
-import { NotFoundError, ConflictError } from "@/utils/errors.util";
+import { Attendance } from "../models/attendance.model.js";
+import { Employee } from "@/modules/employee/models/employee.model.js";
+import { logger } from "@/config/logger.js";
+import { ATTENDANCE_STATUS } from "@/constants/index.js";
+import { NotFoundError, ConflictError } from "@/utils/errors.util.js";
 import {
   type MarkAttendanceInput,
   type AttendanceQuery,
-} from "../schemas/attendance.schema";
-import { getPaginationSkip } from "@/utils/pagination.util";
+} from "../schemas/attendance.schema.js";
+import { getPaginationSkip } from "@/utils/pagination.util.js";
 
 // ---------------------------------------------------------------------------
 // markAttendance — create or overwrite a single attendance record

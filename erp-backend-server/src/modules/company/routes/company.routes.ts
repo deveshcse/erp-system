@@ -1,14 +1,14 @@
 import { Router } from "express";
-import * as companyController from "../controllers/company.controller";
-import { authenticate } from "@/middleware/authenticate.middleware";
-import { authorize } from "@/middleware/authorize.middleware";
-import { validate } from "@/middleware/validate.middleware";
-import { RESOURCES, ACTIONS } from "@/constants";
+import * as companyController from "../controllers/company.controller.js";
+import { authenticate } from "@/middleware/authenticate.middleware.js";
+import { authorize } from "@/middleware/authorize.middleware.js";
+import { validate } from "@/middleware/validate.middleware.js";
+import { RESOURCES, ACTIONS } from "@/constants/index.js";
 import {
   createCompanySchema,
   updateCompanySchema,
   companyIdParamSchema,
-} from "../schemas/company.schema";
+} from "../schemas/company.schema.js";
 
 const router = Router();
 

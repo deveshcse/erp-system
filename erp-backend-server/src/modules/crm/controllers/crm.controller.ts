@@ -1,9 +1,9 @@
 import { type Request, type Response, type NextFunction } from "express";
-import { sendSuccess, buildPaginationMeta } from "@/utils/response.util";
-import { getParam } from "@/utils/request.util";
-import { parsePagination } from "@/utils/pagination.util";
-import { HTTP_STATUS } from "@/constants";
-import * as crmService from "../services/crm.service";
+import { sendSuccess, buildPaginationMeta } from "@/utils/response.util.js";
+import { getParam } from "@/utils/request.util.js";
+import { parsePagination } from "@/utils/pagination.util.js";
+import { HTTP_STATUS } from "@/constants/index.js";
+import * as crmService from "../services/crm.service.js";
 import {
   type CreateLeadInput,
   type UpdateLeadInput,
@@ -11,7 +11,7 @@ import {
   type CreateQuotationInput,
   type CreateInvoiceInput,
   type UpdatePaymentStatusInput,
-} from "../schemas/crm.schema";
+} from "../schemas/crm.schema.js";
 
 // ============================================================================
 // LEAD CONTROLLER

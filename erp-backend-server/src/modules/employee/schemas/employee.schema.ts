@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EMPLOYEE_STATUS } from "@/constants";
+import { EMPLOYEE_STATUS } from "@/constants/index.js";
 
 const objectIdRegex = /^[a-f\d]{24}$/i;
 
