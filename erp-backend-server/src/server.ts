@@ -37,16 +37,26 @@ async function bootstrap(): Promise<void> {
   initializeSocket(httpServer);
 
   // 6. Listen
-  httpServer.listen(env.PORT, () => {
-    logger.info(
-      {
-        port: env.PORT,
-        apiBase: `http://localhost:${env.PORT}/api/${env.API_VERSION}`,
-        swaggerDocs: `http://localhost:${env.PORT}/api-docs`,
-      },
-      `[Server] ✅  ERP Backend running on port ${env.PORT}`
-    );
-  });
+  httpServer
+    .listen(env.PORT, () => {
+      logger.info(
+        {
+          port: env.PORT,
+          apiBase: `http://localhost:${env.PORT}/api/${env.API_VERSION}`,
+          swaggerDocs: `http://localhost:${env.PORT}/api-docs`,
+        },
+        `[Server] ✅  ERP Backend running on port ${env.PORT}`
+      );
+    })
+    .on("error", (error: any) => {
+      if (error.code === "EADDRINUSE") {
+        logger.fatal(
+          { port: env.PORT },
+          `[Server] ❌  Port ${env.PORT} is already in use. Please stop other instances and try again.`
+        );
+        process.exit(1);
+      }
+    });
 
   // ── Graceful shutdown ────────────────────────────────────────────────────
   // Registers handlers for SIGTERM (container orchestrators) and

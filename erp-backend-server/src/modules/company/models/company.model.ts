@@ -78,7 +78,7 @@ const companySchema = new Schema<ICompany>(
 // ---------------------------------------------------------------------------
 // Indexes
 // ---------------------------------------------------------------------------
-companySchema.index({ email: 1 }, { unique: true });
+// companySchema.index({ email: 1 }, { unique: true }); // Removed to avoid duplicate index warning
 companySchema.index({ isActive: 1 });
 companySchema.index({ name: "text" }); // For text search
 

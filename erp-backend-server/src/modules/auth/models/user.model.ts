@@ -101,7 +101,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 // ---------------------------------------------------------------------------
 // Indexes
 // ---------------------------------------------------------------------------
-userSchema.index({ email: 1 }, { unique: true });
+// userSchema.index({ email: 1 }, { unique: true }); // Removed to avoid duplicate index warning
 userSchema.index({ companyId: 1, role: 1 });
 userSchema.index({ companyId: 1, isActive: 1 });
 
