@@ -12,7 +12,9 @@
     "build": "tsc --project tsconfig.json",
     "start": "node dist/server.js",
     "swagger": "tsx src/config/swagger.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "keywords": [],
   "author": "",
@@ -52,6 +54,8 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0",
+    "supertest": "^7.0.0"
   }
 }
