@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
-import { quotationsApi } from '../../api/quotations.api';
-import QuotationTable from '../../components/quotations/QuotationTable';
-import CreateQuotationForm from '../../components/quotations/CreateQuotationForm';
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { quotationsApi } from "../../api/quotations.api";
+import QuotationTable from "../../components/quotations/QuotationTable";
+import CreateQuotationForm from "../../components/quotations/CreateQuotationForm";
 
 const QuotationPage = () => {
   const queryClient = useQueryClient();
@@ -13,7 +13,7 @@ const QuotationPage = () => {
 
   // Fetch Quotations (No pagination in UI currently, fetch all for client side rendering)
   const { data: quotationsData, isLoading } = useQuery({
-    queryKey: ['quotations', params],
+    queryKey: ["quotations", params],
     queryFn: () => quotationsApi.getAll(params),
   });
 
@@ -21,13 +21,13 @@ const QuotationPage = () => {
   const createMutation = useMutation({
     mutationFn: (data) => quotationsApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries(['quotations']);
+      queryClient.invalidateQueries(["quotations"]);
       setIsModalOpen(false);
-      toast.success('Quotation created successfully');
+      toast.success("Quotation created successfully");
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to create quotation');
-    }
+      toast.error(err.response?.data?.message || "Failed to create quotation");
+    },
   });
 
   const handlePageChange = (newPage) => {
@@ -40,7 +40,9 @@ const QuotationPage = () => {
 
   const stats = {
     total: rawQuotations?.totalQuotations || quotations.length,
-    totalValue: rawQuotations?.totalAmount || quotations.reduce((sum, q) => sum + (q.totalAmount || 0), 0)
+    totalValue:
+      rawQuotations?.totalAmount ||
+      quotations.reduce((sum, q) => sum + (q.totalAmount || 0), 0),
   };
 
   return (
@@ -118,14 +120,14 @@ const QuotationPage = () => {
           </p>
           <div className="flex gap-2">
             <button
-              disabled={pagination.page <= 1}
+              disabled={true}
               onClick={() => handlePageChange(pagination.page - 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
               Previous
             </button>
             <button
-              disabled={pagination.page >= pagination.totalPages}
+              disabled={true}
               onClick={() => handlePageChange(pagination.page + 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
@@ -146,40 +148,87 @@ const QuotationPage = () => {
       {/* Read-only View Modal (Simplified for now) */}
       {viewingQuotation && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setViewingQuotation(null)}></div>
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => setViewingQuotation(null)}
+          ></div>
           <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="p-6 border-b flex justify-between items-center">
-              <h3 className="font-bold text-lg text-gray-900">Quotation Summary</h3>
-              <button onClick={() => setViewingQuotation(null)} className="text-gray-400 hover:text-gray-900 transition">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              <h3 className="font-bold text-lg text-gray-900">
+                Quotation Summary
+              </h3>
+              <button
+                onClick={() => setViewingQuotation(null)}
+                className="text-gray-400 hover:text-gray-900 transition"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </div>
             <div className="p-6 space-y-4">
-              <p className="text-sm font-bold text-gray-900 border-b pb-4">Customer: <span className="font-medium text-gray-600 ml-2">{viewingQuotation.customerName}</span></p>
-              
+              <p className="text-sm font-bold text-gray-900 border-b pb-4">
+                Customer:{" "}
+                <span className="font-medium text-gray-600 ml-2">
+                  {viewingQuotation.customerName}
+                </span>
+              </p>
+
               <div className="max-h-64 overflow-y-auto space-y-2">
-                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Items</h4>
+                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                  Items
+                </h4>
                 {viewingQuotation.items.map((item, i) => (
-                  <div key={i} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                  <div
+                    key={i}
+                    className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100"
+                  >
                     <div>
-                      <span className="font-bold text-sm text-gray-900 block">{item.name}</span>
-                      <span className="text-xs text-gray-500 font-medium">Qty: {item.quantity} × ₹{item.price.toFixed(2)}</span>
+                      <span className="font-bold text-sm text-gray-900 block">
+                        {item.name}
+                      </span>
+                      <span className="text-xs text-gray-500 font-medium">
+                        Qty: {item.quantity} × ₹{item.price.toFixed(2)}
+                      </span>
                     </div>
-                    <span className="font-bold text-sm text-gray-900">₹{(item.quantity * item.price).toFixed(2)}</span>
+                    <span className="font-bold text-sm text-gray-900">
+                      ₹{(item.quantity * item.price).toFixed(2)}
+                    </span>
                   </div>
                 ))}
               </div>
-              
+
               <div className="pt-4 border-t flex justify-between items-center bg-gray-900 text-white p-4 rounded-xl">
-                 <div>
-                    <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block">Total</span>
-                    <span className="text-xs text-gray-400">Includes {viewingQuotation.tax}% Tax</span>
-                 </div>
-                 <span className="text-2xl font-black">₹{viewingQuotation.totalAmount.toFixed(2)}</span>
+                <div>
+                  <span className="text-xs font-bold text-gray-400 uppercase tracking-widest block">
+                    Total
+                  </span>
+                  <span className="text-xs text-gray-400">
+                    Includes {viewingQuotation.tax}% Tax
+                  </span>
+                </div>
+                <span className="text-2xl font-black">
+                  ₹{viewingQuotation.totalAmount.toFixed(2)}
+                </span>
               </div>
             </div>
             <div className="p-4 border-t bg-gray-50 flex justify-end">
-              <button onClick={() => setViewingQuotation(null)} className="px-6 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100 transition">Close</button>
+              <button
+                onClick={() => setViewingQuotation(null)}
+                className="px-6 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-100 transition"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

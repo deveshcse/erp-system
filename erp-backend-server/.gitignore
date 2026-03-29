@@ -1,7 +1,0 @@
-node_modules/
-dist/
-.env
-swagger.json
-*.log
-.DS_Store
-coverage/

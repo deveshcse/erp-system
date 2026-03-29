@@ -1,50 +1,51 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'react-hot-toast';
-import { invoicesApi } from '../../api/invoices.api';
-import InvoiceTable from '../../components/invoices/InvoiceTable';
-import InvoiceForm from '../../components/invoices/InvoiceForm';
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import { invoicesApi } from "../../api/invoices.api";
+import InvoiceTable from "../../components/invoices/InvoiceTable";
+import InvoiceForm from "../../components/invoices/InvoiceForm";
 
 const InvoicesPage = () => {
   const queryClient = useQueryClient();
-  const [activeFilter, setActiveFilter] = useState('All'); // All, PENDING, PARTIALLY_PAID, PAID
+  const [activeFilter, setActiveFilter] = useState("All"); // All, PENDING, PARTIALLY_PAID, PAID
   const [params, setParams] = useState({ page: 1, limit: 8 });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingInvoice, setViewingInvoice] = useState(null);
 
   // Fetch Invoices
   const { data: invoicesData, isLoading } = useQuery({
-    queryKey: ['invoices', params, activeFilter],
-    queryFn: () => invoicesApi.getAll({ 
-      ...params, 
-      paymentStatus: activeFilter === 'All' ? undefined : activeFilter 
-    }),
+    queryKey: ["invoices", params, activeFilter],
+    queryFn: () =>
+      invoicesApi.getAll({
+        ...params,
+        paymentStatus: activeFilter === "All" ? undefined : activeFilter,
+      }),
   });
 
   // Create Invoice Mutation
   const createMutation = useMutation({
     mutationFn: (data) => invoicesApi.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries(['invoices']);
+      queryClient.invalidateQueries(["invoices"]);
       setIsModalOpen(false);
-      toast.success('Invoice created successfully');
+      toast.success("Invoice created successfully");
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to create invoice');
-    }
+      toast.error(err.response?.data?.message || "Failed to create invoice");
+    },
   });
 
   const updateStatusMutation = useMutation({
-    mutationFn: ({ id, paymentStatus }) => invoicesApi.updateStatus(id, { paymentStatus }),
+    mutationFn: ({ id, paymentStatus }) =>
+      invoicesApi.updateStatus(id, { paymentStatus }),
     onSuccess: () => {
-      queryClient.invalidateQueries(['invoices']);
-      toast.success('Invoice status updated');
+      queryClient.invalidateQueries(["invoices"]);
+      toast.success("Invoice status updated");
     },
     onError: (err) => {
-      toast.error(err.response?.data?.message || 'Failed to update status');
-    }
+      toast.error(err.response?.data?.message || "Failed to update status");
+    },
   });
-
 
   const handlePageChange = (newPage) => {
     setParams((prev) => ({ ...prev, page: newPage }));
@@ -56,11 +57,25 @@ const InvoicesPage = () => {
 
   const stats = {
     total: rawInvoices?.totalInvoices || invoices.length,
-    pendingValue: rawInvoices?.summary?.pendingAmount || invoices.filter(i => i.paymentStatus === 'PENDING').reduce((sum, i) => sum + (i.total || 0), 0),
-    paidValue: rawInvoices?.summary?.paidAmount || invoices.filter(i => i.paymentStatus === 'PAID').reduce((sum, i) => sum + (i.total || 0), 0),
-    pending: rawInvoices?.summary?.pendingCount || invoices.filter(i => i.paymentStatus === 'PENDING').length,
-    partiallyPaid: rawInvoices?.summary?.partiallyPaidCount || invoices.filter(i => i.paymentStatus === 'PARTIALLY_PAID').length,
-    paid: rawInvoices?.summary?.paidCount || invoices.filter(i => i.paymentStatus === 'PAID').length,
+    pendingValue:
+      rawInvoices?.summary?.pendingAmount ||
+      invoices
+        .filter((i) => i.paymentStatus === "PENDING")
+        .reduce((sum, i) => sum + (i.total || 0), 0),
+    paidValue:
+      rawInvoices?.summary?.paidAmount ||
+      invoices
+        .filter((i) => i.paymentStatus === "PAID")
+        .reduce((sum, i) => sum + (i.total || 0), 0),
+    pending:
+      rawInvoices?.summary?.pendingCount ||
+      invoices.filter((i) => i.paymentStatus === "PENDING").length,
+    partiallyPaid:
+      rawInvoices?.summary?.partiallyPaidCount ||
+      invoices.filter((i) => i.paymentStatus === "PARTIALLY_PAID").length,
+    paid:
+      rawInvoices?.summary?.paidCount ||
+      invoices.filter((i) => i.paymentStatus === "PAID").length,
   };
 
   return (
@@ -187,14 +202,14 @@ const InvoicesPage = () => {
           </p>
           <div className="flex gap-2">
             <button
-              disabled={pagination.page <= 1}
+              disabled={true}
               onClick={() => handlePageChange(pagination.page - 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
               Previous
             </button>
             <button
-              disabled={pagination.page >= pagination.totalPages}
+              disabled={true}
               onClick={() => handlePageChange(pagination.page + 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
@@ -215,30 +230,60 @@ const InvoicesPage = () => {
       {/* View Detail Modal */}
       {viewingInvoice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setViewingInvoice(null)}></div>
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setViewingInvoice(null)}
+          ></div>
           <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
               <div>
-                 <h3 className="font-bold text-lg text-gray-900">Invoice <span className="text-gray-500 font-mono tracking-tighter">#{viewingInvoice.invoiceNumber}</span></h3>
+                <h3 className="font-bold text-lg text-gray-900">
+                  Invoice{" "}
+                  <span className="text-gray-500 font-mono tracking-tighter">
+                    #{viewingInvoice.invoiceNumber}
+                  </span>
+                </h3>
               </div>
-              <button onClick={() => setViewingInvoice(null)} className="text-gray-400 hover:text-gray-900 transition bg-white rounded-full p-1 shadow-sm border border-gray-100">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+              <button
+                onClick={() => setViewingInvoice(null)}
+                className="text-gray-400 hover:text-gray-900 transition bg-white rounded-full p-1 shadow-sm border border-gray-100"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
               </button>
             </div>
-            
+
             <div className="p-6">
-              
               {/* Info grid */}
               <div className="grid grid-cols-2 gap-6 mb-6">
                 <div>
-                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Billed To</p>
-                   <p className="font-bold text-gray-900">{viewingInvoice.customerName}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                    Billed To
+                  </p>
+                  <p className="font-bold text-gray-900">
+                    {viewingInvoice.customerName}
+                  </p>
                 </div>
                 <div className="text-right">
-                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Payment Status</p>
-                   <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${viewingInvoice.paymentStatus === 'PAID' ? 'bg-green-50 text-green-700 border-green-200' : viewingInvoice.paymentStatus === 'PENDING' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}>
-                     {viewingInvoice.paymentStatus.replace('_', ' ')}
-                   </span>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                    Payment Status
+                  </p>
+                  <span
+                    className={`inline-block px-3 py-1 rounded-full text-xs font-bold border ${viewingInvoice.paymentStatus === "PAID" ? "bg-green-50 text-green-700 border-green-200" : viewingInvoice.paymentStatus === "PENDING" ? "bg-yellow-50 text-yellow-700 border-yellow-200" : "bg-blue-50 text-blue-700 border-blue-200"}`}
+                  >
+                    {viewingInvoice.paymentStatus.replace("_", " ")}
+                  </span>
                 </div>
               </div>
 
@@ -247,19 +292,35 @@ const InvoicesPage = () => {
                 <table className="w-full text-left">
                   <thead className="bg-gray-50">
                     <tr>
-                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase">Item</th>
-                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase text-right">Qty</th>
-                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase text-right">Price</th>
-                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase text-right">Total</th>
+                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase">
+                        Item
+                      </th>
+                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase text-right">
+                        Qty
+                      </th>
+                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase text-right">
+                        Price
+                      </th>
+                      <th className="px-4 py-3 text-xs font-bold text-gray-400 uppercase text-right">
+                        Total
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
                     {viewingInvoice.items.map((item, i) => (
                       <tr key={i}>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900">{item.name}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 text-right">{item.quantity}</td>
-                        <td className="px-4 py-3 text-sm text-gray-600 text-right">₹{item.price.toFixed(2)}</td>
-                        <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">₹{(item.quantity * item.price).toFixed(2)}</td>
+                        <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                          {item.name}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600 text-right">
+                          {item.quantity}
+                        </td>
+                        <td className="px-4 py-3 text-sm text-gray-600 text-right">
+                          ₹{item.price.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
+                          ₹{(item.quantity * item.price).toFixed(2)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -268,23 +329,22 @@ const InvoicesPage = () => {
 
               {/* Totals */}
               <div className="mt-6 flex justify-end">
-                 <div className="w-64 space-y-3">
-                   <div className="flex justify-between text-sm text-gray-600">
-                     <span>Tax</span>
-                     <span>{viewingInvoice.tax}%</span>
-                   </div>
-                   <div className="flex justify-between text-lg font-black text-gray-900 border-t pt-2">
-                     <span>Total</span>
-                     <span>₹{viewingInvoice.total.toFixed(2)}</span>
-                   </div>
-                 </div>
+                <div className="w-64 space-y-3">
+                  <div className="flex justify-between text-sm text-gray-600">
+                    <span>Tax</span>
+                    <span>{viewingInvoice.tax}%</span>
+                  </div>
+                  <div className="flex justify-between text-lg font-black text-gray-900 border-t pt-2">
+                    <span>Total</span>
+                    <span>₹{viewingInvoice.total.toFixed(2)}</span>
+                  </div>
+                </div>
               </div>
-
             </div>
 
-             <div className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
-              <button 
-                onClick={() => setViewingInvoice(null)} 
+            <div className="px-6 py-4 border-t bg-gray-50 flex justify-end gap-3 rounded-b-2xl">
+              <button
+                onClick={() => setViewingInvoice(null)}
                 className="px-6 py-2.5 bg-white border border-gray-200 rounded-xl text-xs font-bold text-gray-700 uppercase tracking-widest hover:bg-gray-50 transition"
               >
                 Close View

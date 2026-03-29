@@ -1,18 +1,18 @@
-import { useState } from 'react';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { companiesApi } from '../../api/companies.api';
-import CompanyTable from '../../components/companies/CompanyTable';
-import CompanyForm from '../../components/companies/CompanyForm';
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { companiesApi } from "../../api/companies.api";
+import CompanyTable from "../../components/companies/CompanyTable";
+import CompanyForm from "../../components/companies/CompanyForm";
 
 const CompaniesPage = () => {
   const queryClient = useQueryClient();
-  const [params, setParams] = useState({ page: 1, limit: 8, search: '' });
+  const [params, setParams] = useState({ page: 1, limit: 8, search: "" });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creationSuccessData, setCreationSuccessData] = useState(null);
 
   // Fetch Companies
   const { data, isLoading, error } = useQuery({
-    queryKey: ['companies', params],
+    queryKey: ["companies", params],
     queryFn: () => companiesApi.getAll(params),
   });
 
@@ -20,7 +20,7 @@ const CompaniesPage = () => {
   const addMutation = useMutation({
     mutationFn: (newCompany) => companiesApi.create(newCompany),
     onSuccess: (response) => {
-      queryClient.invalidateQueries(['companies']);
+      queryClient.invalidateQueries(["companies"]);
       setCreationSuccessData(response.data.data);
     },
   });
@@ -138,14 +138,14 @@ const CompaniesPage = () => {
           </p>
           <div className="flex gap-2">
             <button
-              disabled={pagination.page <= 1}
+              disabled={true}
               onClick={() => handlePageChange(pagination.page - 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
               Previous
             </button>
             <button
-              disabled={pagination.page >= pagination.totalPages}
+              disabled={true}
               onClick={() => handlePageChange(pagination.page + 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
@@ -208,8 +208,8 @@ const CompaniesPage = () => {
                       </svg>
                     </div>
                     <p className="text-gray-600">
-                      Company and Admin user have been created. Please share these
-                      credentials with the Company Admin.
+                      Company and Admin user have been created. Please share
+                      these credentials with the Company Admin.
                     </p>
                   </div>
 

@@ -164,6 +164,7 @@ const LeadsPage = () => {
           { label: "Lost", value: "LOST" },
         ].map((filter) => (
           <button
+             disabled = {true}
             key={filter.value}
             onClick={() => {
               setActiveFilter(filter.value);
@@ -198,14 +199,14 @@ const LeadsPage = () => {
           </p>
           <div className="flex gap-2">
             <button
-              disabled={pagination.page <= 1}
+               disabled = {true}
               onClick={() => handlePageChange(pagination.page - 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
               Previous
             </button>
             <button
-              disabled={pagination.page >= pagination.totalPages}
+               disabled = {true}
               onClick={() => handlePageChange(pagination.page + 1)}
               className="px-4 py-1.5 text-[10px] font-black uppercase tracking-widest bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all active:scale-95 flex items-center gap-1 shadow-sm"
             >
